@@ -28,7 +28,8 @@ export default class LaunchPage extends React.Component {
   	render() {
 		return (
             <div className="flexContainer">
-                <div><Link to="/schema"><button>New</button></Link></div>
+                <div className="separator"/>
+                <div className="linkButtonContainer"><Link to="/schema"><button>New</button></Link></div>
                 <div className="logInBox">
                     <div className="logInTitle"><h4>Old</h4></div>
                     <form id="todo-form" onSubmit={this.handleSubmit}>
@@ -38,7 +39,7 @@ export default class LaunchPage extends React.Component {
                         <div>
                             <input name="key" placeholder="Key" onChange={this.handleChange} value={this.state.key} />
                         </div>
-                        <div className="buttonContainer"><button type="submit">Create</button></div>
+                        <div className="submitButtonContainer"><button type="submit">Create</button></div>
                         </form>
                 </div>
 

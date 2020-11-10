@@ -13,12 +13,29 @@ export default class Visualizer extends React.Component {
 		super()
 		this.state = {
 			showArrows: true,
-			tableName: '',
+			tables: [],
 		}
 		this.handleStop = this.handleStop.bind(this)
 		this.handleStart = this.handleStart.bind(this)
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+	}
+
+	componentDidMount() {
+		this.setState({
+			tables: [
+				{
+					id: 1,
+					name: 'authors',
+					fields: [
+						{
+							name: 'firstName',
+							type: 'string'
+						}
+					]
+				}
+			]
+		})
 	}
  
 	handleStart(e,data) {
@@ -30,9 +47,10 @@ export default class Visualizer extends React.Component {
 		console.log(e, data)
 	}
 
-    handleChange(evt) {
+    handleChange(evt, tableId) {
+		const tables = this.state.tables.map( table => table.id === tableId ? {...table, [evt.target.name]: evt.target.value} : table)
         this.setState({
-            [evt.target.name]: evt.target.value
+            tables
         })
     }
     handleSubmit(evt) {
@@ -49,37 +67,30 @@ export default class Visualizer extends React.Component {
 				<div className="separator"/>
 				<div className="schemaContainer">
 				<ArcherContainer strokeColor='red' >
-						<Draggable
-						axis="both"
-						handle=".logInBox"
-						defaultPosition={{x: 120, y: 80}}
-						bounds={{left: 0, top: 0, right: 300, bottom: 300}}
-						position={null}
-						grid={[25, 25]}
-						scale={1}
-						onStart={this.handleStart}
-						onDrag={this.handleDrag}
-						onStop={this.handleStop}>
-							<div style={rootStyle}>
-								<ArcherElement
-								id="root"
-								relations={this.state.showArrows ?
-									[{
-								targetId: 'element3',
-								targetAnchor: 'top',
-								sourceAnchor: 'bottom',
-								}]
-								:
-								[]}>
-									<div className="logInBox">
-										<form onSubmit={this.handleSubmit}>
-											<div><input name="tableName" placeholder="Table Name" onChange={this.handleChange} value={this.state.tableName} /></div>
-											<div className="handle">handle</div>
-										</form>
-									</div>
-								</ArcherElement>
-							</div>
-						</Draggable>
+						{this.state.tables.map( table => {
+						return (
+							<Draggable axis="both" handle=".logInBox" defaultPosition={{x: 120, y: 80}} bounds={{left: 0, top: 0, right: 300, bottom: 300}} position={null} grid={[25, 25]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
+								<div style={rootStyle}>
+									<ArcherElement id="root" relations={this.state.showArrows ? [{ targetId: 'element3', targetAnchor: 'top', sourceAnchor: 'bottom' }] : []}>
+										<div className="logInBox">
+											<form onSubmit={this.handleSubmit}>
+												<div><input name="name" placeholder="Table Name" onChange={(e) => this.handleChange(e, table.id)} value={table.name} /></div>
+												<div className="formBody">
+													<div className="formRowMain">
+														<div>Name</div>
+														<div>Type</div>
+													</div>
+													<div className="formRowMain">
+														{/* <div><input name="tableName" placeholder="Table Name" onChange={this.handleChange} value={this.state.tableName} /></div>
+														<div><input name="tableName" placeholder="Table Name" onChange={this.handleChange} value={this.state.tableName} /></div> */}
+													</div>
+												</div>
+											</form>
+										</div>
+									</ArcherElement>
+								</div>
+							</Draggable>)})
+						}
 						<Draggable
 						axis="both"
 						handle=".handle"

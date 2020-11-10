@@ -1,7 +1,6 @@
 .flexContainer {
     display: flex;
     flex-direction: column;
-    border: 1px solid red;
     justify-content: center; 
     align-items: center;
 }
@@ -11,6 +10,7 @@
     border-radius: 4px;
     display: flex;
     flex-direction: column;
+    background: black;
 }
 
 .schemaContainer {
@@ -24,9 +24,14 @@
     justify-content: center;
 }
 
-.buttonContainer {
+.submitButtonContainer {
     display: flex;
     justify-content: center;
+    margin-top: 5px;
+}
+
+.linkButtonContainer {
+    margin-bottom: 5px
 }
 
 nav {
@@ -51,5 +56,36 @@ nav {
 .fullBody {
     display: flex;
     flex-direction: column;
+}
+
+input {
+    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    border-radius: 4px;
+    padding:3px 10px;
+    border:0;
+    margin: 2px 5px;
+}
+
+h4 {
+    color: white;
+}
+
+button {
+    padding: 7px 16px;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    background-color: white;
+    color: black;
+    border: 2px solid red;
+    transition-duration: 0.4s;
+  }
+  
+button:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    background-color: red;
 }
 
