@@ -1,16 +1,45 @@
 import React from 'react';
-
+import {Link} from 'react-router-dom'
 const rootStyle = { display: 'flex', justifyContent: 'center' };
 const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between', }
 const boxStyle = { padding: '10px', border: '1px solid black', };
 
 export default class LaunchPage extends React.Component {
 
+    constructor() {
+        super();
+        this.state = {
+            name: '',
+            key: ''
+        }
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    handleChange(evt) {
+        this.setState({
+            [evt.target.name]: evt.target.value
+        })
+    }
+    handleSubmit(evt) {
+        evt.preventDefault();
+        this.setState({name: '', key: ''})
+    }
+
   	render() {
 		return (
             <div className="flexContainer">
+                <div><Link to="/schema"><button>New</button></Link></div>
                 <div className="logInBox">
-                    hey...
+                    <div className="logInTitle"><h4>Old</h4></div>
+                    <form id="todo-form" onSubmit={this.handleSubmit}>
+                        <div>
+                            <input name="name" placeholder="Schema Name" onChange={this.handleChange} value={this.state.name} />
+                        </div>
+                        <div>
+                            <input name="key" placeholder="Key" onChange={this.handleChange} value={this.state.key} />
+                        </div>
+                        <div className="buttonContainer"><button type="submit">Create</button></div>
+                        </form>
                 </div>
 
             </div>
