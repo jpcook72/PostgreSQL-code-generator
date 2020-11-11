@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 import { ArcherContainer, ArcherElement } from 'react-archer';
+import axios from 'axios';
 
 const rootStyle = { display: 'flex', justifyContent: 'center' };
 const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between', }
@@ -22,6 +23,7 @@ export default class Visualizer extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.addTable = this.addTable.bind(this)
 		this.addField = this.addField.bind(this)
+		this.saveSchema = this.saveSchema.bind(this)
 	}
 
 	componentDidMount() {
@@ -74,6 +76,11 @@ export default class Visualizer extends React.Component {
             tables
         })
 	}
+
+	async saveSchema() {
+		const savedSchema = await axios.post('/api/schema/1', this.state)
+		this.setState({tables: savedSchema.data.tables})
+	}
 	
     handleFieldChange(evt, tableId, fieldId) {
 		console.log('in handleFieldChange', evt.target.name, evt.target.value, tableId, fieldId, this.state.tables)
@@ -98,6 +105,7 @@ export default class Visualizer extends React.Component {
 		return (
 			<div className="fullBody">
 				<nav>
+					<button onClick={this.saveSchema}>Save</button>
 					<button onClick={this.addTable}>Add Table</button>
 				</nav>
 				<div className="separator"/>

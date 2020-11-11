@@ -12,7 +12,7 @@ app.use(express.json());
 console.log(__dirname);
 app.use(express.static(path.join(__dirname + '/public')));
 
-// app.use('/api', router)
+app.use('/api', router)
 
 app.use((req,res,next) => {
     res.status(404).send('Page not found');
@@ -24,7 +24,7 @@ app.use((err, req, res, next)=> {
 
   const init = async()=> {
     try {
-      db.sync(force: true)
+      db.sync({force: true})
       const port = process.env.PORT || 3035;
       app.listen(port, ()=> console.log(`listening on port ${port}`));
     }

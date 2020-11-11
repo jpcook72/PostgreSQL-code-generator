@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 const rootStyle = { display: 'flex', justifyContent: 'center' };
 const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between', }
 const boxStyle = { padding: '10px', border: '1px solid black', };
+import axios from 'axios';
 
 export default class LaunchPage extends React.Component {
 
@@ -14,6 +15,7 @@ export default class LaunchPage extends React.Component {
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.newSchema = this.newSchema.bind(this);
     }
     handleChange(evt) {
         this.setState({
@@ -25,11 +27,16 @@ export default class LaunchPage extends React.Component {
         this.setState({name: '', key: ''})
     }
 
+    async newSchema() {
+        await axios.post('/api/newSchema', {})
+    }
+
+
   	render() {
 		return (
             <div className="flexContainer">
                 <div className="separator"/>
-                <div className="linkButtonContainer"><Link to="/schema"><button>New</button></Link></div>
+                <div className="linkButtonContainer"><Link to="/schema"><button onClick={this.newSchema}>New</button></Link></div>
                 <div className="logInBox">
                     <div className="logInTitle"><h4>Old</h4></div>
                     <form id="todo-form" onSubmit={this.handleSubmit}>
