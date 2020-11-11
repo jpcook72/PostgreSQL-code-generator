@@ -89,3 +89,8 @@ button:hover {
     background-color: red;
 }
 
+.formRowMain {
+    display: flex;
+    justify-content: space-evenly;
+}
+

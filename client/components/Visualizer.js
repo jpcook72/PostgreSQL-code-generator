@@ -18,7 +18,10 @@ export default class Visualizer extends React.Component {
 		this.handleStop = this.handleStop.bind(this)
 		this.handleStart = this.handleStart.bind(this)
 		this.handleChange = this.handleChange.bind(this)
+		this.handleFieldChange = this.handleFieldChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+		this.addTable = this.addTable.bind(this)
+		this.addField = this.addField.bind(this)
 	}
 
 	componentDidMount() {
@@ -29,6 +32,7 @@ export default class Visualizer extends React.Component {
 					name: 'authors',
 					fields: [
 						{
+							id: 1,
 							name: 'firstName',
 							type: 'string'
 						}
@@ -36,6 +40,23 @@ export default class Visualizer extends React.Component {
 				}
 			]
 		})
+	}
+
+	addTable() {
+		const tables = [...this.state.tables];
+		let maxID = Math.max(...this.state.tables.map( table => table.id));
+		let newTable = {id: maxID + 1, name: '', fields: []}
+		tables.push(newTable)
+		this.setState({tables})
+	}
+
+	addField(tableId) {
+		const fields = [...this.state.tables.filter( table => table.id === tableId)[0].fields]
+		let maxID = Math.max(...this.state.tables.map( table => Math.max(...table.fields.map(field => field.id))))
+		const newField = {id: maxID + 1, name: '', type: 'string'}
+		fields.push(newField)
+		let tables = [...this.state.tables.map( table => table.id === tableId ? {...table, fields}: table )]
+		this.setState({tables})
 	}
  
 	handleStart(e,data) {
@@ -52,7 +73,22 @@ export default class Visualizer extends React.Component {
         this.setState({
             tables
         })
+	}
+	
+    handleFieldChange(evt, tableId, fieldId) {
+		console.log('in handleFieldChange', evt.target.name, evt.target.value, tableId, fieldId, this.state.tables)
+		const tables = [...this.state.tables.map( table => 
+			table.id === tableId ? 
+				{...table, fields: [...table.fields.map( field => 
+					field.id === fieldId ? 
+						{...field, [evt.target.name]: evt.target.value} : 
+						field)] } :
+				table)]
+        this.setState({
+            tables
+        })
     }
+
     handleSubmit(evt) {
         evt.preventDefault();
         this.setState({tableName: ''})
@@ -62,7 +98,7 @@ export default class Visualizer extends React.Component {
 		return (
 			<div className="fullBody">
 				<nav>
-					hey
+					<button onClick={this.addTable}>Add Table</button>
 				</nav>
 				<div className="separator"/>
 				<div className="schemaContainer">
@@ -80,11 +116,24 @@ export default class Visualizer extends React.Component {
 														<div>Name</div>
 														<div>Type</div>
 													</div>
-													<div className="formRowMain">
-														{/* <div><input name="tableName" placeholder="Table Name" onChange={this.handleChange} value={this.state.tableName} /></div>
-														<div><input name="tableName" placeholder="Table Name" onChange={this.handleChange} value={this.state.tableName} /></div> */}
-													</div>
+													{
+														table.fields.map( field => {
+															return(<div className="formRowMain">
+																<div><input name="name" placeholder="Field Name" onChange={(e) => this.handleFieldChange(e, table.id, field.id)} value={field.name} /></div>
+																<div>
+																	<select name="type" onChange={(e) => this.handleFieldChange(e, table.id, field.id)}>
+																		<option value="string">String</option>
+																		<option value="integer">Integer</option>
+																		<option value="float">Float</option>
+																		<option value="boolean">Boolean</option>
+																	</select>
+																</div>
+															</div>)
+														})
+													}
+
 												</div>
+												<button onClick={() => this.addField(table.id)}>Add Row</button>
 											</form>
 										</div>
 									</ArcherElement>

@@ -1,7 +1,7 @@
 const express = require("express")
 const morgan = require('morgan');
 const path = require('path');
-// const { db } = require('./db');
+const { db } = require('./db');
 const router = require('./routes');
 
 const app = express();
@@ -24,7 +24,7 @@ app.use((err, req, res, next)=> {
 
   const init = async()=> {
     try {
-    //   db.sync()
+      db.sync(force: true)
       const port = process.env.PORT || 3035;
       app.listen(port, ()=> console.log(`listening on port ${port}`));
     }
