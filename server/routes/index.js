@@ -4,11 +4,9 @@ const Sequelize = require('sequelize')
 
 router.post('/newSchema', async( req,res,next) => {
     try {
-        console.log('in new schema route')
         const schemas = await Schema.findAll()
         await Promise.all(schemas.map( schema => schema.destroy()))
         await Schema.create({id: 1, key: '11111'})
-        console.log('made it to bottom')
         res.send('hey')
     }
     catch(err) {
@@ -22,11 +20,8 @@ router.post('/schema/:schemaId', async (req, res, next) => {
 
         //this is temporary
             const schemas = await Schema.findAll()
-            console.log(schemas)
             if (!schemas.length) await Schema.create({id: 1, key: '11111'})
         //
-
-        console.log('at the top')
 
         const tables = await Table.findAll({
             where: {
@@ -42,8 +37,6 @@ router.post('/schema/:schemaId', async (req, res, next) => {
           }})
 
         await Promise.all([...tables.map(table => table.destroy()), ...fields.map(field => field.destroy())])
-        const hereTables = await Table.findAll();
-        const hereFields = await Field.findAll();
 
         let tableArr = [];
         let fieldArr = [];
@@ -62,7 +55,6 @@ router.post('/schema/:schemaId', async (req, res, next) => {
         await Promise.all(fieldArr)
 
         const schema = await Schema.findByPk(req.params.schemaId, { include: { all: true, nested: true }})
-          console.log('final schema', schema)
         res.send(schema)
     }
     catch(err) {
@@ -74,7 +66,7 @@ router.post('/schema/:schemaId', async (req, res, next) => {
 
 router.get('/schema/:schemaId', async(req,res,next) => {
     try {
-        res.send(await Schema.findByPk(req.params.schemaId, { include: { all: true, nested: true }}))
+        res.json(await Schema.findByPk(req.params.schemaId, { include: { all: true, nested: true }}))
     }
     catch(err) {
         next(err)
