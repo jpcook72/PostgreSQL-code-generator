@@ -35,18 +35,20 @@ export default class LaunchPage extends React.Component {
   	render() {
 		return (
             <div className="flexContainer">
-                <div className="separator"/>
-                <div className="linkButtonContainer"><Link to="/schema"><button onClick={this.newSchema}>New</button></Link></div>
+                <h3>Postgres Schema Maker</h3>
+                <h5>npm install pg-auto-write for DB set-up code</h5>
+                <div className="launchSeparator"/>
+                <div className="linkButtonContainer"><Link to="/schema"><button onClick={this.newSchema}>New Schema</button></Link></div>
                 <div className="logInBox">
-                    <div className="logInTitle"><h4>Old</h4></div>
+                    <div className="logInTitle"><h4>I have a schema</h4></div>
                     <form id="todo-form" onSubmit={this.handleSubmit}>
-                        <div>
-                            <input name="name" placeholder="Schema Name" onChange={this.handleChange} value={this.state.name} />
+                        <div className="logInBoxInput">
+                            <input name="name" placeholder="Schema Name..." onChange={this.handleChange} value={this.state.name} />
                         </div>
-                        <div>
-                            <input name="key" placeholder="Key" onChange={this.handleChange} value={this.state.key} />
+                        <div className="logInBoxInput">
+                            <input name="key" placeholder="Key..." onChange={this.handleChange} value={this.state.key} />
                         </div>
-                        <div className="submitButtonContainer"><button type="submit">Create</button></div>
+                        <div className="submitButtonContainer"><button type="submit">Log-In</button></div>
                         </form>
                 </div>
 

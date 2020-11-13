@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 import { ArcherContainer, ArcherElement } from 'react-archer';
 import axios from 'axios';
+import {Link} from 'react-router-dom'
 
 const rootStyle = { display: 'flex', justifyContent: 'center' };
 const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between', }
@@ -105,30 +106,34 @@ export default class Visualizer extends React.Component {
 		return (
 			<div className="fullBody">
 				<nav>
-					<button onClick={this.saveSchema}>Save</button>
-					<button onClick={this.addTable}>Add Table</button>
+					<div className="flexButtonContainer">
+						<button style={{'margin-right': '2px'}} onClick={this.saveSchema}><i class="far fa-save"></i></button>
+						<button style={{'margin-left': '2px'}}onClick={this.addTable}>+</button>
+					</div>
+					<h3>Test DB</h3>
+					<div><Link to="/"><button ><i class="fas fa-home"></i></button></Link></div>
+					
 				</nav>
-				<div className="separator"/>
 				<div className="schemaContainer">
 				<ArcherContainer strokeColor='red' >
 						{this.state.tables.map( table => {
 						return (
-							<Draggable axis="both" handle=".logInBox" defaultPosition={{x: 120, y: 80}} bounds={{left: 0, top: 0, right: 300, bottom: 300}} position={null} grid={[25, 25]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
+							<Draggable axis="both" handle=".logInBox" defaultPosition={{x: 120, y: 80}} bounds={{left: 0, top: 0, right: 300, bottom: 300}} position={null} grid={[1, 1]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
 								<div style={rootStyle}>
 									<ArcherElement id="root" relations={this.state.showArrows ? [{ targetId: 'element3', targetAnchor: 'top', sourceAnchor: 'bottom' }] : []}>
 										<div className="logInBox">
 											<form onSubmit={this.handleSubmit}>
-												<div><input name="name" placeholder="Table Name" onChange={(e) => this.handleChange(e, table.id)} value={table.name} /></div>
+												<div className="flexButtonContainer"><input className="titleForm" name="name" placeholder="Table Name..." onChange={(e) => this.handleChange(e, table.id)} value={table.name} /></div>
 												<div className="formBody">
 													<div className="formRowMain">
-														<div>Name</div>
-														<div>Type</div>
+														<div style={{'margin-right': '13px'}}>Field</div>
+														<div style={{'margin-left': '13px'}}>Type</div>
 													</div>
 													{
 														table.fields.map( field => {
 															return(<div className="formRowMain">
-																<div><input name="name" placeholder="Field Name" onChange={(e) => this.handleFieldChange(e, table.id, field.id)} value={field.name} /></div>
-																<div>
+																<div className="halfRow"><input name="name" placeholder="Name..." onChange={(e) => this.handleFieldChange(e, table.id, field.id)} value={field.name} /></div>
+																<div className="halfRow">
 																	<select name="type" onChange={(e) => this.handleFieldChange(e, table.id, field.id)}>
 																		<option value="string">String</option>
 																		<option value="integer">Integer</option>

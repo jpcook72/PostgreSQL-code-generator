@@ -1,22 +1,70 @@
+body {
+    font-family: sans-serif;
+}
+
+html,body
+{
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden; 
+}
+
+div.ex2 {
+    overflow-y: hidden;
+  }
+
+
+::-webkit-input-placeholder {
+    font-style: italic;
+ }
+ :-moz-placeholder {
+    font-style: italic;  
+ }
+ ::-moz-placeholder {
+    font-style: italic;  
+ }
+ :-ms-input-placeholder {  
+    font-style: italic; 
+ }
+
 .flexContainer {
+    background: white;
     display: flex;
     flex-direction: column;
     justify-content: center; 
     align-items: center;
 }
 
+.flexButtonContainer {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+}
+
+.flexInputContainer {
+    display: flex;
+    justify-content: space-center; 
+    align-items: center;
+}
+
 .logInBox {
-    border: 1px solid black;
+    border: 2px solid black;
     border-radius: 4px;
     display: flex;
     flex-direction: column;
-    background: black;
+    background-color: white;
 }
 
 .schemaContainer {
-    height: 30rem;
-    border: 1px solid black;
+    height: 100vh - 10%;
+    border: 4px solid black;
     border-radius: 4px;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: white;
 }
 
 .logInTitle {
@@ -27,47 +75,55 @@
 .submitButtonContainer {
     display: flex;
     justify-content: center;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .linkButtonContainer {
-    margin-bottom: 5px
+    margin-bottom: 10px
+}
+
+.logInBoxInput {
+    margin-left: 3px;
+    margin-right: 3px
 }
 
 nav {
     top: 0;
     z-index: 1;
-    position: fixed;
     align-items: center;
-    height: 60px;
+    height: 10%;
     width: 100%;
     display: flex;
     justify-content: space-around;
-    background: black;
-    color: white;
-    margin-left: -15px;
-    margin-right: -15px;
+    background: white;
+    color: black;
 }
 
-.separator {
-    height: 60px;
+.launchSeparator {
+    height: 15px;
 }
 
 .fullBody {
     display: flex;
     flex-direction: column;
+    background-color: white;
 }
 
 input {
     box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
     border-radius: 4px;
     padding:3px 10px;
-    border:0;
+    border: 1px solid black;
     margin: 2px 5px;
 }
 
 h4 {
-    color: white;
+    color: black;
+}
+
+h5 {
+    margin-top: 10px;
+    margin-bottom: 10px
 }
 
 button {
@@ -81,7 +137,8 @@ button {
     background-color: white;
     color: black;
     border: 2px solid red;
-    transition-duration: 0.4s;
+    transition-duration: 0.1s;
+    cursor:pointer;
   }
   
 button:hover {
@@ -94,3 +151,51 @@ button:hover {
     justify-content: space-evenly;
 }
 
+.halfRow {
+    width: 45%;
+    display: flex;
+    justify-content: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.halfRow input {
+    width: 80px;
+    height: 25px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.halfrow select {
+    border-radius: 4px;
+    width: 80px;
+}
+
+.logInBox button {
+    margin-top: 5px;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-bottom: 3px;
+}
+
+.formRowMain div {
+    margin-top: 5px;
+    margin-bottom: 2px;
+}
+
+.titleForm {
+    margin-left: 20px;
+    margin-right: 20px;
+    border: 2px solid black;
+    height: 40px;
+}
+
+.logInBox .flexButtonContainer {
+    height: 50px;
+}
