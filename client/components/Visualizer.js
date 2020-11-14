@@ -56,7 +56,7 @@ export default class Visualizer extends React.Component {
 	addField(tableId) {
 		const fields = [...this.state.tables.filter( table => table.id === tableId)[0].fields]
 		let maxID = Math.max(...this.state.tables.map( table => Math.max(...table.fields.map(field => field.id))))
-		const newField = {id: maxID + 1, name: '', type: 'string'}
+		const newField = {id: maxID + 1, name: '', type: 'string', allowNull: true}
 		fields.push(newField)
 		let tables = [...this.state.tables.map( table => table.id === tableId ? {...table, fields}: table )]
 		this.setState({tables})
@@ -84,12 +84,12 @@ export default class Visualizer extends React.Component {
 	}
 	
     handleFieldChange(evt, tableId, fieldId) {
-		console.log('in handleFieldChange', evt.target.name, evt.target.value, tableId, fieldId, this.state.tables)
+		const value = evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value;
 		const tables = [...this.state.tables.map( table => 
 			table.id === tableId ? 
 				{...table, fields: [...table.fields.map( field => 
 					field.id === fieldId ? 
-						{...field, [evt.target.name]: evt.target.value} : 
+						{...field, [evt.target.name]: value} : 
 						field)] } :
 				table)]
         this.setState({
@@ -131,15 +131,22 @@ export default class Visualizer extends React.Component {
 													</div>
 													{
 														table.fields.map( field => {
-															return(<div className="formRowMain">
-																<div className="halfRow"><input name="name" placeholder="Name..." onChange={(e) => this.handleFieldChange(e, table.id, field.id)} value={field.name} /></div>
-																<div className="halfRow">
-																	<select name="type" onChange={(e) => this.handleFieldChange(e, table.id, field.id)}>
-																		<option value="string">String</option>
-																		<option value="integer">Integer</option>
-																		<option value="float">Float</option>
-																		<option value="boolean">Boolean</option>
-																	</select>
+															return(
+															<div>
+																<div className="formRowMain">
+																	<div className="halfRow"><input name="name" placeholder="Name..." onChange={(e) => this.handleFieldChange(e, table.id, field.id)} value={field.name} /></div>
+																	<div className="halfRow">
+																		<select name="type" onChange={(e) => this.handleFieldChange(e, table.id, field.id)}>
+																			<option value="string">String</option>
+																			<option value="integer">Integer</option>
+																			<option value="float">Float</option>
+																			<option value="boolean">Boolean</option>
+																		</select>
+																	</div>
+																</div>
+																<div>
+																	<label htmlFor = "allowNull">Allow Null</label>
+																	<input name = "allowNull" type="checkbox" onChange ={(e) => this.handleFieldChange(e, table.id, field.id)} checked={field.allowNull} />
 																</div>
 															</div>)
 														})

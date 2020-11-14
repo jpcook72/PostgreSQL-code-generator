@@ -48,7 +48,7 @@ router.post('/schema/:schemaId', async (req, res, next) => {
         
           req.body.tables.forEach( table => {
             table.fields.forEach( field => {
-              fieldArr.push(Field.create({id: field.id, name: field.name, type: field.type, tableId: table.id}))
+              fieldArr.push(Field.create({id: field.id, name: field.name, type: field.type, allowNull: field.allowNull, tableId: table.id}))
             })
           })
 

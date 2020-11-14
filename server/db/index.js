@@ -21,6 +21,9 @@ const Field = db.define('field', {
     },
     type: {
         type: Sequelize.ENUM(['string','float','integer','boolean'])
+    },
+    allowNull: {
+        type: Sequelize.BOOLEAN,
     }
 })
 
