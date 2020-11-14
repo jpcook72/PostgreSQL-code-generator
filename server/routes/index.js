@@ -24,31 +24,43 @@ router.post('/schema/:schemaId', async (req, res, next) => {
         //
 
         const tables = await Table.findAll({
-            where: {
-                schemaId: req.params.schemaId
-            }
+            // where: {
+            //     schemaId: req.params.schemaId
+            // }
         })
 
         const fields = await Field.findAll({  
-            where: {
-                tableId: {
-                    [Sequelize.Op.or]: [...tables.map(table => table.id)]
-                }
-          }})
+        //     where: {
+        //         tableId: {
+        //             [Sequelize.Op.or]: [...tables.map(table => table.id)]
+        //         }
+        //   }
+        })
 
-        await Promise.all([...tables.map(table => table.destroy({force: true})), ...fields.map(field => field.destroy())])
-          console.log('no upe', tables)
+        fields.forEach( async (field) => {
+            await field.destroy();
+        })
+
+          tables.forEach( async (table) => {
+            console.log('it is in')
+              await table.destroy({ include: { all: true, nested: true }})
+              console.log(table)
+          })
+
+        // await Promise.all([...tables.map(table => table.destroy({force: true})), ...fields.map(field => field.destroy())])
+          console.log('no upe', await Table.findAll(), await Field.findAll())
         let tableArr = [];
         let fieldArr = [];
           req.body.tables.forEach( table => {
-              tableArr.push(Table.create({id: table.id, name: table.name, schemaId: req.params.schemaId, associations: !!table.associations ? Object.keys(table.associations).filter(key => table.associations[key]) : []}))
+              console.log(typeof table.id, typeof Number(table.id), typeof table.id * 1, table.name, req.params.schemaId, !!table.associations ? Object.keys(table.associations).filter(key => table.associations[key]) : []);
+              tableArr.push(Table.create({id: Number(table.id), name: table.name, schemaId: req.params.schemaId, associations: !!table.associations ? Object.keys(table.associations).filter(key => table.associations[key]) : []}))
           })
           console.log('made it!', tableArr, req.body.tables)
-        const tableProm = await Promise.all(tableArr)
-        
+        const tableProm = await Promise.all([...tableArr])
+        console.log('pst table promise', tableProm)
           req.body.tables.forEach( table => {
             table.fields.forEach( field => {
-              fieldArr.push(Field.create({id: field.id, name: field.name, type: field.type, allowNull: field.allowNull, tableId: table.id}))
+              fieldArr.push(Field.create({id: Number(field.id), name: field.name, type: field.type, allowNull: field.allowNull, tableId: table.id}))
             })
           })
 
