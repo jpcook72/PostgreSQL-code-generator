@@ -45,7 +45,7 @@ router.post('/schema/:schemaId', async (req, res, next) => {
           })
           console.log('made it!', tableArr, req.body.tables)
         const tableProm = await Promise.all(tableArr)
-        console.log('ueee', tableProm)
+        
           req.body.tables.forEach( table => {
             table.fields.forEach( field => {
               fieldArr.push(Field.create({id: field.id, name: field.name, type: field.type, allowNull: field.allowNull, tableId: table.id}))
