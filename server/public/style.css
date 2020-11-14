@@ -55,10 +55,11 @@ div.ex2 {
     display: flex;
     flex-direction: column;
     background-color: white;
+    cursor: pointer;
 }
 
 .schemaContainer {
-    height: 100vh - 10%;
+    height: 650px;
     border: 4px solid black;
     border-radius: 4px;
     margin-top: 5px;
@@ -172,7 +173,7 @@ form {
     margin-bottom: 0;
 }
 
-.halfrow select {
+select {
     border-radius: 4px;
     width: 80px;
 }
@@ -198,4 +199,38 @@ form {
 
 .logInBox .flexButtonContainer {
     height: 50px;
+}
+
+.formRowParent:hover > .hiddenCheck {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    margin-top: 5px;
+}
+
+.hiddenCheck {
+    display: none;
+}
+
+#toCenter {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.allCheckParent:hover > .hiddenCheck {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin-top: 5px;
+}
+
+.centerChecks {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
 }

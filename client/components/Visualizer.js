@@ -14,8 +14,8 @@ export default class Visualizer extends React.Component {
 	constructor() {
 		super()
 		this.state = {
-			showArrows: true,
-			tables: [],
+			showArrows: false,
+			tables: []
 		}
 		this.handleStop = this.handleStop.bind(this)
 		this.handleStart = this.handleStart.bind(this)
@@ -25,6 +25,7 @@ export default class Visualizer extends React.Component {
 		this.addTable = this.addTable.bind(this)
 		this.addField = this.addField.bind(this)
 		this.saveSchema = this.saveSchema.bind(this)
+		this.handleBelongsTo = this.handleBelongsTo.bind(this)
 	}
 
 	componentDidMount() {
@@ -32,33 +33,35 @@ export default class Visualizer extends React.Component {
 			tables: [
 				{
 					id: 1,
-					name: 'authors',
-					fields: [
-						{
-							id: 1,
-							name: 'firstName',
-							type: 'string'
-						}
-					]
+					name: '',
+					fields: [],
+					associations: {},
 				}
 			]
 		})
 	}
 
 	addTable() {
-		const tables = [...this.state.tables];
+		let tables = [...this.state.tables];
 		let maxID = Math.max(...this.state.tables.map( table => table.id));
-		let newTable = {id: maxID + 1, name: '', fields: []}
-		tables.push(newTable)
-		this.setState({tables})
+		tables.forEach( table => {
+			table.associations[maxID + 1] = false;
+		})
+		let newTable = {id: maxID + 1, name: '', fields: [], associations: {}}
+		tables.forEach( (table) => { 
+			newTable.associations[table.id] = false
+		})
+		this.setState({tables: [...tables, newTable]})
 	}
 
 	addField(tableId) {
 		const fields = [...this.state.tables.filter( table => table.id === tableId)[0].fields]
+		console.log('top', fields)
 		let maxID = Math.max(...this.state.tables.map( table => Math.max(...table.fields.map(field => field.id))))
 		const newField = {id: maxID + 1, name: '', type: 'string', allowNull: true}
-		fields.push(newField)
-		let tables = [...this.state.tables.map( table => table.id === tableId ? {...table, fields}: table )]
+		console.log('uh', newField)
+		let tables = [...this.state.tables.map( table => table.id === tableId ? {...table, fields: [...fields, newField]}: table )]
+		console.log('end', tables)
 		this.setState({tables})
 	}
  
@@ -67,7 +70,7 @@ export default class Visualizer extends React.Component {
 	}
  
 	handleStop(e, data) {
-		this.setState({showArrows: true})
+		this.setState({showArrows: false})
 		console.log(e, data)
 	}
 
@@ -80,6 +83,7 @@ export default class Visualizer extends React.Component {
 
 	async saveSchema() {
 		const savedSchema = await axios.post('/api/schema/1', this.state)
+		console.log('right here', savedSchema.data);
 		this.setState({tables: savedSchema.data.tables})
 	}
 	
@@ -95,7 +99,13 @@ export default class Visualizer extends React.Component {
         this.setState({
             tables
         })
-    }
+	}
+	
+	handleBelongsTo(evt, tableId, inTableId) {
+		console.log(this.state.tables)
+		const tables = [...this.state.tables.map( table => table.id === tableId ? {...table, associations: {...table.associations, [inTableId]: evt.target.checked}} : table )]
+		this.setState({tables})
+	}
 
     handleSubmit(evt) {
         evt.preventDefault();
@@ -103,6 +113,12 @@ export default class Visualizer extends React.Component {
     }
 
   	render() {
+		  let offSetCounter = 0
+		  const renderTables = this.state.tables.map( (table) => {
+			  const newTable = {...table, offset: offSetCounter}
+			  offSetCounter = offSetCounter + 132 + (32 * table.fields.length)
+			  return newTable
+		  })
 		return (
 			<div className="fullBody">
 				<nav>
@@ -116,9 +132,12 @@ export default class Visualizer extends React.Component {
 				</nav>
 				<div className="schemaContainer">
 				<ArcherContainer strokeColor='red' >
-						{this.state.tables.map( table => {
+				{/* <div className="rowFlex"> */}
+						{renderTables.map( (table,ind,arr) => {
+							const offset = table.offset
 						return (
-							<Draggable axis="both" handle=".logInBox" defaultPosition={{x: 120, y: 80}} bounds={{left: 0, top: 0, right: 300, bottom: 300}} position={null} grid={[1, 1]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
+							
+							<Draggable className="dragBox" key={table.id} axis="both" handle=".logInBox" defaultPosition={{x: -595, y: 0 - offset}} bounds={{left: -595, top: 0 - offset, right: 595, bottom: 435 - offset}} position={null} grid={[1, 1]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
 								<div style={rootStyle}>
 									<ArcherElement id="root" relations={this.state.showArrows ? [{ targetId: 'element3', targetAnchor: 'top', sourceAnchor: 'bottom' }] : []}>
 										<div className="logInBox">
@@ -132,7 +151,7 @@ export default class Visualizer extends React.Component {
 													{
 														table.fields.map( field => {
 															return(
-															<div>
+															<div className="formRowParent">
 																<div className="formRowMain">
 																	<div className="halfRow"><input name="name" placeholder="Name..." onChange={(e) => this.handleFieldChange(e, table.id, field.id)} value={field.name} /></div>
 																	<div className="halfRow">
@@ -144,7 +163,7 @@ export default class Visualizer extends React.Component {
 																		</select>
 																	</div>
 																</div>
-																<div>
+																<div className="hiddenCheck">
 																	<label htmlFor = "allowNull">Allow Null</label>
 																	<input name = "allowNull" type="checkbox" onChange ={(e) => this.handleFieldChange(e, table.id, field.id)} checked={field.allowNull} />
 																</div>
@@ -154,13 +173,33 @@ export default class Visualizer extends React.Component {
 
 												</div>
 												<button onClick={() => this.addField(table.id)}>Add Row</button>
+												<div className="allCheckParent" id="toCenter">
+													<button>Belong To</button>
+													<div className="hiddenCheck">
+														{
+															arr.map( (inTable, inInd) => {
+																const inTableId = inTable.id
+																if (ind != inInd) {
+																	return(	
+																	<div className="centerChecks">																
+																		<label htmlFor = "belongsTo">{`${inTable.name}`}</label>
+																		<input name = "belongsTo" type="checkbox" onChange ={(e) => this.handleBelongsTo(e, table.id, inTable.id)} checked={table.associations[inTableId]} />
+																	</div>)
+																}
+															})
+														}
+													</div>
+												</div>
+												
 											</form>
 										</div>
 									</ArcherElement>
 								</div>
-							</Draggable>)})
+							</Draggable>
+							)})
 						}
-						<Draggable
+						{/* </div> */}
+						{/* <Draggable
 						axis="both"
 						handle=".handle"
 						defaultPosition={{x: 120, y: 40}}
@@ -175,7 +214,7 @@ export default class Visualizer extends React.Component {
 									<div style={boxStyle}>Element 3</div>
 								</ArcherElement>
 							</div>
-						</Draggable>
+						</Draggable> */}
 					</ArcherContainer>	
 				</div>
 
