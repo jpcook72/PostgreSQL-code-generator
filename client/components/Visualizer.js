@@ -14,7 +14,7 @@ export default class Visualizer extends React.Component {
 	constructor() {
 		super()
 		this.state = {
-			showArrows: false,
+			showArrows: true,
 			tables: []
 		}
 		this.handleStop = this.handleStop.bind(this)
@@ -70,7 +70,7 @@ export default class Visualizer extends React.Component {
 	}
  
 	handleStop(e, data) {
-		this.setState({showArrows: false})
+		this.setState({showArrows: true})
 		console.log(e, data)
 	}
 
@@ -135,11 +135,13 @@ export default class Visualizer extends React.Component {
 				{/* <div className="rowFlex"> */}
 						{renderTables.map( (table,ind,arr) => {
 							const offset = table.offset
+							console.log('ok', Object.keys(table.associations), Object.keys(table.associations).filter( assoc => table[assoc]).map( belongsTo => ({ targetId: `table${belongsTo}`, targetAnchor: 'top', sourceAnchor: 'bottom' })))
 						return (
 							
 							<Draggable className="dragBox" key={table.id} axis="both" handle=".logInBox" defaultPosition={{x: -595, y: 0 - offset}} bounds={{left: -595, top: 0 - offset, right: 595, bottom: 435 - offset}} position={null} grid={[1, 1]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
 								<div style={rootStyle}>
-									<ArcherElement id="root" relations={this.state.showArrows ? [{ targetId: 'element3', targetAnchor: 'top', sourceAnchor: 'bottom' }] : []}>
+									<ArcherElement id={`table${table.id}`} relations={this.state.showArrows ? 
+										Object.keys(table.associations).filter( assoc => table.associations[assoc]).map( belongsTo => ({ targetId: `table${belongsTo}`, targetAnchor: 'top', sourceAnchor: 'bottom' })) : []}>
 										<div className="logInBox">
 											<form onSubmit={this.handleSubmit}>
 												<div className="flexButtonContainer"><input className="titleForm" name="name" placeholder="Table Name..." onChange={(e) => this.handleChange(e, table.id)} value={table.name} /></div>
