@@ -131,7 +131,7 @@ export default class Visualizer extends React.Component {
 					
 				</nav>
 				<div className="schemaContainer">
-				<ArcherContainer strokeColor='red' >
+				<ArcherContainer strokeColor='red'>
 				{/* <div className="rowFlex"> */}
 						{renderTables.map( (table,ind,arr) => {
 							const offset = table.offset
