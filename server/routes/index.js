@@ -36,16 +36,16 @@ router.post('/schema/:schemaId', async (req, res, next) => {
                 }
           }})
 
-        await Promise.all([...tables.map(table => table.destroy()), ...fields.map(field => field.destroy())])
-          console.log('no upe')
+        await Promise.all([...tables.map(table => table.destroy({force: true})), ...fields.map(field => field.destroy())])
+          console.log('no upe', tables)
         let tableArr = [];
         let fieldArr = [];
           req.body.tables.forEach( table => {
               tableArr.push(Table.create({id: table.id, name: table.name, schemaId: req.params.schemaId, associations: !!table.associations ? Object.keys(table.associations).filter(key => table.associations[key]) : []}))
           })
-          console.log('made it!')
+          console.log('made it!', tableArr, req.body.tables)
         const tableProm = await Promise.all(tableArr)
-        
+        console.log('ueee', tableProm)
           req.body.tables.forEach( table => {
             table.fields.forEach( field => {
               fieldArr.push(Field.create({id: field.id, name: field.name, type: field.type, allowNull: field.allowNull, tableId: table.id}))
@@ -53,7 +53,7 @@ router.post('/schema/:schemaId', async (req, res, next) => {
           })
 
         await Promise.all(fieldArr)
-
+          console.log('down here;')
 
         const theSchema = await Schema.findByPk(req.params.schemaId, { include: { all: true, nested: true }})
         theSchema.tables.forEach ( (table, ind, arr) => {
