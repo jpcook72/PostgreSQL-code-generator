@@ -6,8 +6,6 @@ import axios from 'axios';
 import {Link} from 'react-router-dom'
 
 const rootStyle = { display: 'flex', justifyContent: 'center' };
-const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between', }
-const boxStyle = { padding: '10px', border: '1px solid black', };
 
 export default class Visualizer extends React.Component {
 
@@ -131,8 +129,7 @@ export default class Visualizer extends React.Component {
 					
 				</nav>
 				<div className="schemaContainer">
-				<ArcherContainer strokeColor='red'>
-				{/* <div className="rowFlex"> */}
+					<ArcherContainer strokeColor='red'>
 						{renderTables.map( (table,ind,arr) => {
 							const offset = table.offset
 							console.log('ok', Object.keys(table.associations), Object.keys(table.associations).filter( assoc => table[assoc]).map( belongsTo => ({ targetId: `table${belongsTo}`, targetAnchor: 'top', sourceAnchor: 'bottom' })))
@@ -200,31 +197,9 @@ export default class Visualizer extends React.Component {
 							</Draggable>
 							)})
 						}
-						{/* </div> */}
-						{/* <Draggable
-						axis="both"
-						handle=".handle"
-						defaultPosition={{x: 120, y: 40}}
-						position={null}
-						grid={[25, 25]}
-						scale={1}
-						onStart={this.handleStart}
-						onDrag={this.handleDrag}
-						onStop={this.handleStop}>
-							<div className="handle" style={rowStyle}>
-								<ArcherElement id="element3">
-									<div style={boxStyle}>Element 3</div>
-								</ArcherElement>
-							</div>
-						</Draggable> */}
 					</ArcherContainer>	
 				</div>
-
-			
-
 			</div>
-
-
 		);
   	}
 }

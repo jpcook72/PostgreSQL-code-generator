@@ -1,8 +1,5 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
-const rootStyle = { display: 'flex', justifyContent: 'center' };
-const rowStyle = { margin: '200px 0', display: 'flex', justifyContent: 'space-between', }
-const boxStyle = { padding: '10px', border: '1px solid black', };
 import axios from 'axios';
 
 export default class LaunchPage extends React.Component {
