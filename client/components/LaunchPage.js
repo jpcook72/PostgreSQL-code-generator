@@ -25,9 +25,9 @@ export default class LaunchPage extends React.Component {
     }
 
     async newSchema() {
-        await axios.post('/api/newSchema', {})
+        let schema = await axios.post('/api/newSchema', {})
+        window.location.pathname = `/schema/${schema.data.id}`
     }
-
 
   	render() {
 		return (
@@ -35,7 +35,8 @@ export default class LaunchPage extends React.Component {
                 <h3>Postgres Schema Maker</h3>
                 <h5>npm install pg-auto-write for DB set-up code</h5>
                 <div className="launchSeparator"/>
-                <div className="linkButtonContainer"><Link to="/schema"><button onClick={this.newSchema}>New Schema</button></Link></div>
+                <div className="linkButtonContainer"><button onClick={this.newSchema}>New Schema</button></div>
+                {/* <div className="linkButtonContainer"><Link to="/schema"><button onClick={this.newSchema}>New Schema</button></Link></div> */}
                 <div className="logInBox">
                     <div className="logInTitle"><h4>I have a schema</h4></div>
                     <form id="todo-form" onSubmit={this.handleSubmit}>
@@ -45,7 +46,7 @@ export default class LaunchPage extends React.Component {
                         <div className="logInBoxInput">
                             <input name="key" placeholder="Key..." onChange={this.handleChange} value={this.state.key} />
                         </div>
-                        <div className="submitButtonContainer"><button type="submit">Log-In</button></div>
+                        <div className="submitButtonContainer"><Link to={`/schema/${this.state.key}`}><button type="submit">Log-In</button></Link></div>
                         </form>
                 </div>
 

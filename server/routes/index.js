@@ -4,24 +4,25 @@ const Sequelize = require('sequelize')
 
 router.post('/newSchema', async( req,res,next) => {
     try {
-        const schemas = await Schema.findAll()
-        await Promise.all(schemas.map( schema => schema.destroy()))
-        await Schema.create({id: 1, key: '11111'})
-        res.send('hey')
+        const schema = await Schema.create({key: Math.random().toString(36).substr(2, 6).toUpperCase()})
+        res.send(schema)
     }
     catch(err) {
         next(err)
     }
 })
 
-router.post('/schema/:schemaId', async (req, res, next) => {
+router.put('/schema/:schemaId', async (req, res, next) => {
 
     try {
-        console.log('can ir')
-        //this is temporary
-            const schemas = await Schema.findAll()
-            if (!schemas.length) await Schema.create({id: 1, key: '11111'})
-        //
+
+            let schema = await Schema.findOne({
+                where: {
+                    id: req.params.schemaId
+                }
+            })
+            if (!schema) schema = await Schema.create({id: req.params.schemaId, key: })
+
 
         const tables = await Table.findAll({
             // where: {

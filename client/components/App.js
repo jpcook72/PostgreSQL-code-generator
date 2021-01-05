@@ -11,7 +11,7 @@ export default class App extends Component {
             <Router>
                 <main>
                     <Route path="/" exact component = {LaunchPage}/>
-                    <Route path="/schema" exact component = {Visualizer}/>
+                    <Route path="/schema/:schemaId" exact component = {Visualizer}/>
                 </main>
 
 

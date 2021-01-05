@@ -26,16 +26,19 @@ export default class Visualizer extends React.Component {
 		this.handleBelongsTo = this.handleBelongsTo.bind(this)
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
+		const schemaId = this.props.location.pathname.substr(8)
+		let startState = await axios.get(`/api/schema/${schemaId}`)
+		let startTables = startState.data.tables.length ? startState.data.tables : [
+			{
+				id: 1,
+				name: '',
+				fields: [],
+				associations: {},
+			}
+		]
 		this.setState({
-			tables: [
-				{
-					id: 1,
-					name: '',
-					fields: [],
-					associations: {},
-				}
-			]
+			tables: startTables
 		})
 	}
 
@@ -80,7 +83,7 @@ export default class Visualizer extends React.Component {
 	}
 
 	async saveSchema() {
-		const savedSchema = await axios.post('/api/schema/1', this.state)
+		const savedSchema = await axios.put('/api/schema/1', this.state)
 		console.log('right here', savedSchema.data);
 		this.setState({tables: savedSchema.data.tables})
 	}
