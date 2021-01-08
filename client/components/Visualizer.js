@@ -1,11 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Draggable from 'react-draggable';
 import { ArcherContainer, ArcherElement } from 'react-archer';
 import axios from 'axios';
 import {Link} from 'react-router-dom'
 
-const rootStyle = { display: 'flex', justifyContent: 'center' };
 
 export default class Visualizer extends React.Component {
 
@@ -57,12 +55,9 @@ export default class Visualizer extends React.Component {
 
 	addField(tableId) {
 		const fields = [...this.state.tables.filter( table => table.id === tableId)[0].fields]
-		console.log('top', fields)
 		let maxID = Math.max(...this.state.tables.map( table => Math.max(...table.fields.map(field => field.id))))
 		const newField = {id: maxID + 1, name: '', type: 'string', allowNull: true}
-		console.log('uh', newField)
 		let tables = [...this.state.tables.map( table => table.id === tableId ? {...table, fields: [...fields, newField]}: table )]
-		console.log('end', tables)
 		this.setState({tables})
 	}
  
@@ -72,7 +67,6 @@ export default class Visualizer extends React.Component {
  
 	handleStop(e, data) {
 		this.setState({showArrows: true})
-		console.log(e, data)
 	}
 
     handleChange(evt, tableId) {
@@ -84,7 +78,6 @@ export default class Visualizer extends React.Component {
 
 	async saveSchema() {
 		const savedSchema = await axios.put('/api/schema/1', this.state)
-		console.log('right here', savedSchema.data);
 		this.setState({tables: savedSchema.data.tables})
 	}
 	
@@ -103,7 +96,6 @@ export default class Visualizer extends React.Component {
 	}
 	
 	handleBelongsTo(evt, tableId, inTableId) {
-		console.log(this.state.tables)
 		const tables = [...this.state.tables.map( table => table.id === tableId ? {...table, associations: {...table.associations, [inTableId]: evt.target.checked}} : table )]
 		this.setState({tables})
 	}
@@ -135,11 +127,9 @@ export default class Visualizer extends React.Component {
 					<ArcherContainer strokeColor='red'>
 						{renderTables.map( (table,ind,arr) => {
 							const offset = table.offset
-							console.log('ok', Object.keys(table.associations), Object.keys(table.associations).filter( assoc => table[assoc]).map( belongsTo => ({ targetId: `table${belongsTo}`, targetAnchor: 'top', sourceAnchor: 'bottom' })))
-						return (
-							
+						return (			
 							<Draggable className="dragBox" key={table.id} axis="both" handle=".logInBox" defaultPosition={{x: -595, y: 0 - offset}} bounds={{left: -595, top: 0 - offset, right: 595, bottom: 435 - offset}} position={null} grid={[1, 1]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
-								<div style={rootStyle}>
+								<div style={{ display: 'flex', justifyContent: 'center' }}>
 									<ArcherElement id={`table${table.id}`} relations={this.state.showArrows ? 
 										Object.keys(table.associations).filter( assoc => table.associations[assoc]).map( belongsTo => ({ targetId: `table${belongsTo}`, targetAnchor: 'top', sourceAnchor: 'bottom' })) : []}>
 										<div className="logInBox">

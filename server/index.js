@@ -9,7 +9,6 @@ const app = express();
 app.use(morgan('volleyball'));
 app.use(express.json());
 
-console.log(__dirname);
 app.use(express.static(path.join(__dirname + '/public')));
 
 app.use('/api', router)
