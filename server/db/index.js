@@ -1,17 +1,17 @@
 const Sequelize = require('sequelize')
 
-const db = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/pg-visualizer', {logging: false})
+const db = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/pg-visualizer', { logging: false })
 
 const Schema = db.define('schema', {
     key: {
-      type: Sequelize.STRING,
-      allowNull: false
+        type: Sequelize.STRING,
+        allowNull: false
     }
 })
 
 const Table = db.define('table', {
     name: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
     },
     associations: {
         type: Sequelize.DataTypes.ARRAY(Sequelize.STRING)
@@ -20,21 +20,21 @@ const Table = db.define('table', {
 
 const Field = db.define('field', {
     name: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
     },
     type: {
-        type: Sequelize.ENUM(['string','float','integer','boolean'])
+        type: Sequelize.ENUM(['string', 'float', 'integer', 'boolean'])
     },
     allowNull: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.BOOLEAN
     }
 })
 
-Schema.hasMany(Table);
-Table.belongsTo(Schema);
+Schema.hasMany(Table)
+Table.belongsTo(Schema)
 
-Table.hasMany(Field);
-Field.belongsTo(Table);
+Table.hasMany(Field)
+Field.belongsTo(Table)
 
 module.exports = {
     db,
