@@ -7,8 +7,8 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 export default class Visualizer extends React.Component {
-    constructor () {
-        super()
+    constructor (props) {
+        super(props)
         this.state = {
             showArrows: true,
             tables: []
@@ -25,9 +25,13 @@ export default class Visualizer extends React.Component {
     }
 
     async componentDidMount () {
-        const schemaId = this.props.location.pathname.substr(8)
+		const { schemaId } = this.props.match.params
+		// const startState = await axios.get(`/api/schema`, { schemaId })
+		// console.log(startState.data)
+		// const actualLocation = this.props.match.params.id
+        // const schemaId = this.props.location.pathname.substr(8)
         const startState = await axios.get(`/api/schema/${schemaId}`)
-        const startTables = startState.data.tables.length
+        const startTables = startState.data.tables
             ? startState.data.tables
             : [
                 {
@@ -79,7 +83,8 @@ export default class Visualizer extends React.Component {
     }
 
     async saveSchema () {
-        const savedSchema = await axios.put('/api/schema/1', this.state)
+		const { schemaId } = this.props.match.params
+        const savedSchema = await axios.put(`/api/schema/${schemaId}`, this.state)
         this.setState({ tables: savedSchema.data.tables })
     }
 

@@ -3,8 +3,9 @@ const Sequelize = require('sequelize')
 const db = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/pg-visualizer', { logging: false })
 
 const Schema = db.define('schema', {
-    key: {
+    id: {
         type: Sequelize.STRING,
+        primaryKey: true,
         allowNull: false
     }
 })
@@ -12,9 +13,6 @@ const Schema = db.define('schema', {
 const Table = db.define('table', {
     name: {
         type: Sequelize.STRING
-    },
-    associations: {
-        type: Sequelize.DataTypes.ARRAY(Sequelize.STRING)
     }
 })
 
@@ -30,15 +28,26 @@ const Field = db.define('field', {
     }
 })
 
-Schema.hasMany(Table)
+const Association = db.define('association', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    }
+})
+Schema.hasMany(Table, { onDelete: 'cascade', hooks: true })
 Table.belongsTo(Schema)
 
-Table.hasMany(Field)
+Table.hasMany(Field, { onDelete: 'cascade', hooks: true })
 Field.belongsTo(Table)
+
+Table.belongsToMany(Table, { through: Association, as: 'has', foreignKey: 'belongsToId' })
+Table.belongsToMany(Table, { through: Association, as: 'belongsTo', foreignKey: 'hasId' })
 
 module.exports = {
     db,
     Schema,
     Table,
+    Association,
     Field
 }

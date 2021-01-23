@@ -1,66 +1,55 @@
 const router = require('express').Router()
-const { Schema, Table, Field } = require('../db')
-const Sequelize = require('sequelize')
-
-router.post('/newSchema', async (req, res, next) => {
-    try {
-        const schema = await Schema.create({ key: Math.random().toString(36).substr(2, 6).toUpperCase() })
-        res.send(schema)
-    } catch (err) {
-        next(err)
-    }
-})
+const { Schema, Table, Field, Association } = require('../db')
 
 router.put('/schema/:schemaId', async (req, res, next) => {
     try {
+        // find tables
         const tables = await Table.findAll({
             where: {
                 schemaId: req.params.schemaId
             }
         })
 
-        const fields = await Field.findAll({
-            where: {
-                tableId: {
-                    [Sequelize.Op.or]: [...tables.map(table => table.id)]
-                }
+        // this destroys fields too
+        if (tables.length) await tables.destroy()
+
+        // create promise arrays
+        const tablePromiseArr = []
+        const tableAssociationsAndFieldsPromiseArr = []
+        const fieldPromiseArr = []
+        for (const table of req.body.tables) {
+            tablePromiseArr.push(Table.create({
+                id: Number(table.id),
+                name: table.name,
+                schemaId: req.params.schemaId
+            }))
+        }
+
+        await Promise.all(tablePromiseArr)
+
+        for (const table of req.body.tables) {
+            for (const association of Object.keys(table.associations)) {
+                console.log('this is the association', association)
+                tableAssociationsAndFieldsPromiseArr.push(Association.create({
+                    hasId: Number(table.id),
+                    belongsToId: Number(association)
+                }))
             }
-        })
 
-        fields.forEach(async (field) => {
-            await field.destroy()
-        })
+            for (const field of table.fields) {
+                tableAssociationsAndFieldsPromiseArr.push(Field.create({
+                    id: Number(field.id),
+                    name: field.name,
+                    type: field.type,
+                    allowNull: field.allowNull,
+                    tableId: table.id
+                }))
+            }
+        }
 
-        tables.forEach(async (table) => {
-            await table.destroy({ include: { all: true, nested: true } })
-        })
+        await Promise.all(tableAssociationsAndFieldsPromiseArr)
 
-        const tableArr = []
-        const fieldArr = []
-        req.body.tables.forEach(table => {
-            tableArr.push(Table.create({ id: Number(table.id), name: table.name, schemaId: req.params.schemaId, associations: table.associations ? Object.keys(table.associations).filter(key => table.associations[key]) : [] }))
-        })
-        await Promise.all([...tableArr])
-        req.body.tables.forEach(table => {
-            table.fields.forEach(field => {
-                fieldArr.push(Field.create({ id: Number(field.id), name: field.name, type: field.type, allowNull: field.allowNull, tableId: table.id }))
-            })
-        })
-
-        await Promise.all(fieldArr)
-
-        const theSchema = await Schema.findByPk(req.params.schemaId, { include: { all: true, nested: true } })
-        theSchema.tables.forEach((table, ind, arr) => {
-            const assocArray = table.associations ? [...table.associations] : []
-            delete table.associations
-            table.associations = {}
-            arr.forEach((inTable, inInd) => {
-                if (ind !== inInd) {
-                    table.associations[inTable.id] = assocArray.includes(String(inTable.id))
-                }
-            })
-        })
-        res.send(theSchema)
+        res.send(await Schema.findByPk(req.params.schemaId, { include: { all: true, nested: true } }))
     } catch (err) {
         next(err)
     }
@@ -68,18 +57,14 @@ router.put('/schema/:schemaId', async (req, res, next) => {
 
 router.get('/schema/:schemaId', async (req, res, next) => {
     try {
-        const theSchema = await Schema.findByPk(req.params.schemaId, { include: { all: true, nested: true } })
-        theSchema.tables.forEach((table, ind, arr) => {
-            const assocArray = table.associations ? [...table.associations] : []
-            delete table.associations
-            table.associations = {}
-            arr.forEach((inTable, inInd) => {
-                if (ind !== inInd) {
-                    table.associations[inTable.id] = assocArray.includes(String(inTable.id))
-                }
-            })
-        })
-        res.json(theSchema)
+        const { schemaId } = req.params
+        const schemaFound = await Schema.findByPk(schemaId, { include: { all: true, nested: true } })
+        if (schemaFound) {
+            res.send(schemaFound)
+        } else {
+            await Schema.create({ id: schemaId })
+            res.send(await Schema.findByPk(schemaId, { include: { all: true, nested: true } }))
+        }
     } catch (err) {
         next(err)
     }
