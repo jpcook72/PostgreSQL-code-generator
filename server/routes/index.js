@@ -16,7 +16,6 @@ router.put('/schema/:schemaId', async (req, res, next) => {
         // create promise arrays
         const tablePromiseArr = []
         const tableAssociationsAndFieldsPromiseArr = []
-        const fieldPromiseArr = []
         for (const table of req.body.tables) {
             tablePromiseArr.push(Table.create({
                 id: Number(table.id),
