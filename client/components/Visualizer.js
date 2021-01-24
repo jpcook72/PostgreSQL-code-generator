@@ -26,44 +26,30 @@ export default class Visualizer extends React.Component {
 
     async componentDidMount () {
 		const { schemaId } = this.props.match.params
-		// const startState = await axios.get(`/api/schema`, { schemaId })
-		// console.log(startState.data)
-		// const actualLocation = this.props.match.params.id
-        // const schemaId = this.props.location.pathname.substr(8)
         const startState = await axios.get(`/api/schema/${schemaId}`)
-        const startTables = startState.data.tables
+        const startTables = startState.data.tables.length
             ? startState.data.tables
             : [
                 {
-                    id: 1,
                     name: '',
                     fields: [],
-                    associations: {}
+					has: [],
+					belongsTo: []
                 }
-            ]
+			]
         this.setState({
             tables: startTables
         })
     }
 
     addTable () {
-        const tables = [...this.state.tables]
-        const maxID = Math.max(...this.state.tables.map(table => table.id))
-        tables.forEach(table => {
-            table.associations[maxID + 1] = false
-        })
-        const newTable = { id: maxID + 1, name: '', fields: [], associations: {} }
-        tables.forEach((table) => {
-            newTable.associations[table.id] = false
-        })
-        this.setState({ tables: [...tables, newTable] })
+        const newTable = { name: '', fields: [], has: [], belongsTo: [] }
+        this.setState({ tables: [...this.state.tables, newTable] })
     }
 
-    addField (tableId) {
-        const fields = [...this.state.tables.filter(table => table.id === tableId)[0].fields]
-        const maxID = Math.max(...this.state.tables.map(table => Math.max(...table.fields.map(field => field.id))))
-        const newField = { id: maxID + 1, name: '', type: 'string', allowNull: true }
-        const tables = [...this.state.tables.map(table => table.id === tableId ? { ...table, fields: [...fields, newField] } : table)]
+    addField (selectedTable) {
+		const newField = { name: '', type: 'string', allowNull: true }
+        const tables = [...this.state.tables.map(table => table === selectedTable ? { ...table, fields: [...table.fields, newField] } : table)]
         this.setState({ tables })
     }
 
@@ -75,8 +61,8 @@ export default class Visualizer extends React.Component {
         this.setState({ showArrows: true })
     }
 
-    handleChange (evt, tableId) {
-        const tables = this.state.tables.map(table => table.id === tableId ? { ...table, [evt.target.name]: evt.target.value } : table)
+    handleChange (evt, selectedTable) {
+        const tables = this.state.tables.map(table => table === selectedTable ? { ...table, [evt.target.name]: evt.target.value } : table)
         this.setState({
             tables
         })
@@ -88,14 +74,14 @@ export default class Visualizer extends React.Component {
         this.setState({ tables: savedSchema.data.tables })
     }
 
-    handleFieldChange (evt, tableId, fieldId) {
+    handleFieldChange (evt, selectedTable, selectedField) {
         const value = evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value
         const tables = [...this.state.tables.map(table =>
-            table.id === tableId
+            table === selectedTable
                 ? {
                     ...table,
                     fields: [...table.fields.map(field =>
-                        field.id === fieldId
+                        field === selectedField
                             ? { ...field, [evt.target.name]: value }
                             : field)]
                 }
@@ -105,8 +91,25 @@ export default class Visualizer extends React.Component {
         })
     }
 
-    handleBelongsTo (evt, tableId, inTableId) {
-        const tables = [...this.state.tables.map(table => table.id === tableId ? { ...table, associations: { ...table.associations, [inTableId]: evt.target.checked } } : table)]
+    handleBelongsTo (evt, selectedTable, otherTable) {
+		const tables = [...this.state.tables.map(table => {
+			if (table === selectedTable) {
+				if (evt.target.checked) {
+					table.belongsTo = [...table.belongsTo, otherTable]
+				} else {
+					table.belongsTo = [...table.belongsTo.filter(table => table !== otherTable)]
+				}
+			} else if (table === otherTable) {
+				if (evt.target.checked) {
+					table.has = [...table.has, selectedTable]
+				} else {
+					table.has = [...table.belongsTo.filter(table => table !== selectedTable)]
+				}
+			}
+			return table
+		})
+	]
+
         this.setState({ tables })
     }
 
@@ -138,14 +141,14 @@ export default class Visualizer extends React.Component {
                         {renderTables.map((table, ind, arr) => {
                             const offset = table.offset
                             return (
-                                <Draggable className="dragBox" key={table.id} axis="both" handle=".logInBox" defaultPosition={{ x: -595, y: 0 - offset }} bounds={{ left: -595, top: 0 - offset, right: 595, bottom: 435 - offset }} position={null} grid={[1, 1]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
+                                <Draggable className="dragBox" key={table} axis="both" handle=".logInBox" defaultPosition={{ x: -595, y: 0 - offset }} bounds={{ left: -595, top: 0 - offset, right: 595, bottom: 435 - offset }} position={null} grid={[1, 1]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
                                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                        <ArcherElement id={`table${table.id}`} relations={this.state.showArrows
-                                            ? Object.keys(table.associations).filter(assoc => table.associations[assoc]).map(belongsTo => ({ targetId: `table${belongsTo}`, targetAnchor: 'top', sourceAnchor: 'bottom' }))
+                                        <ArcherElement id={`table${table.name}`} relations={this.state.showArrows
+                                            ? Object.keys(table.associations).filter(assoc => table.associations[assoc]).map(belongsTo => ({ targetId: `table${belongsTo.name}`, targetAnchor: 'top', sourceAnchor: 'bottom' }))
                                             : []}>
                                             <div className="logInBox">
                                                 <form onSubmit={this.handleSubmit}>
-                                                    <div className="flexButtonContainer"><input className="titleForm" name="name" placeholder="Table Name..." onChange={(e) => this.handleChange(e, table.id)} value={table.name} /></div>
+                                                    <div className="flexButtonContainer"><input className="titleForm" name="name" placeholder="Table Name..." onChange={(e) => this.handleChange(e, table)} value={table.name} /></div>
                                                     <div className="formBody">
                                                         <div className="formRowMain">
                                                             <div style={{ 'margin-right': '13px' }}>Field</div>
@@ -156,9 +159,9 @@ export default class Visualizer extends React.Component {
                                                                 return (
                                                                     <div key={field} className="formRowParent">
                                                                         <div className="formRowMain">
-                                                                            <div className="halfRow"><input name="name" placeholder="Name..." onChange={(e) => this.handleFieldChange(e, table.id, field.id)} value={field.name} /></div>
+                                                                            <div className="halfRow"><input name="name" placeholder="Name..." onChange={(e) => this.handleFieldChange(e, table, field)} value={field.name} /></div>
                                                                             <div className="halfRow">
-                                                                                <select name="type" onChange={(e) => this.handleFieldChange(e, table.id, field.id)}>
+                                                                                <select name="type" onChange={(e) => this.handleFieldChange(e, table, field)}>
                                                                                     <option value="string">String</option>
                                                                                     <option value="integer">Integer</option>
                                                                                     <option value="float">Float</option>
@@ -168,25 +171,24 @@ export default class Visualizer extends React.Component {
                                                                         </div>
                                                                         <div className="hiddenCheck">
                                                                             <label htmlFor = "allowNull">Allow Null</label>
-                                                                            <input name = "allowNull" type="checkbox" onChange ={(e) => this.handleFieldChange(e, table.id, field.id)} checked={field.allowNull} />
+                                                                            <input name = "allowNull" type="checkbox" onChange ={(e) => this.handleFieldChange(e, table, field)} checked={field.allowNull} />
                                                                         </div>
                                                                     </div>)
                                                             })
                                                         }
 
                                                     </div>
-                                                    <button onClick={() => this.addField(table.id)}>Add Row</button>
+                                                    <button onClick={() => this.addField(table)}>Add Row</button>
                                                     <div className="allCheckParent" id="toCenter">
                                                         <button>Belong To</button>
                                                         <div className="hiddenCheck">
                                                             {
                                                                 arr.map((inTable, inInd) => {
-                                                                    const inTableId = inTable.id
-                                                                    if (ind !== inInd) {
+                                                                    if (inTable !== table) {
                                                                         return (
                                                                             <div className="centerChecks">
                                                                                 <label htmlFor = "belongsTo">{`${inTable.name}`}</label>
-                                                                                <input name = "belongsTo" type="checkbox" onChange ={(e) => this.handleBelongsTo(e, table.id, inTable.id)} checked={table.associations[inTableId]} />
+                                                                                <input name = "belongsTo" type="checkbox" onChange ={(e) => this.handleBelongsTo(e, table, inTable)} checked={table.belongsTo.includes(inTable)} />
                                                                             </div>)
 																	} else {
 																		return (null)
