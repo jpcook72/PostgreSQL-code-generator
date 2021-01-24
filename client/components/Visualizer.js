@@ -37,6 +37,8 @@ export default class Visualizer extends React.Component {
 					belongsTo: []
                 }
 			]
+
+		console.log('getting here', startTables)
         this.setState({
             tables: startTables
         })
@@ -62,6 +64,7 @@ export default class Visualizer extends React.Component {
     }
 
     handleChange (evt, selectedTable) {
+		console.log(this.state.tables.map(table => table === selectedTable), evt.target.name, evt.target.value)
         const tables = this.state.tables.map(table => table === selectedTable ? { ...table, [evt.target.name]: evt.target.value } : table)
         this.setState({
             tables
@@ -120,11 +123,11 @@ export default class Visualizer extends React.Component {
 
 	render () {
 		let offSetCounter = 0
-		const renderTables = this.state.tables.map((table) => {
-			const newTable = { ...table, offset: offSetCounter }
-			offSetCounter = offSetCounter + 132 + (32 * table.fields.length)
-			return newTable
-		})
+		// const renderTables = this.state.tables.map((table) => {
+		// 	const newTable = { ...table, offset: offSetCounter }
+		// 	offSetCounter = offSetCounter + 132 + (32 * table.fields.length)
+		// 	return newTable
+		// })
         return (
             <div className="fullBody">
                 <nav>
@@ -138,13 +141,13 @@ export default class Visualizer extends React.Component {
                 </nav>
                 <div className="schemaContainer">
                     <ArcherContainer strokeColor='red'>
-                        {renderTables.map((table, ind, arr) => {
+                        {this.state.tables.map((table, ind, arr) => {
                             const offset = table.offset
                             return (
                                 <Draggable className="dragBox" key={table} axis="both" handle=".logInBox" defaultPosition={{ x: -595, y: 0 - offset }} bounds={{ left: -595, top: 0 - offset, right: 595, bottom: 435 - offset }} position={null} grid={[1, 1]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
                                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                                         <ArcherElement id={`table${table.name}`} relations={this.state.showArrows
-                                            ? Object.keys(table.associations).filter(assoc => table.associations[assoc]).map(belongsTo => ({ targetId: `table${belongsTo.name}`, targetAnchor: 'top', sourceAnchor: 'bottom' }))
+                                            ? table.belongsTo.map(belongsTo => ({ targetId: `table${belongsTo.name}`, targetAnchor: 'top', sourceAnchor: 'bottom' }))
                                             : []}>
                                             <div className="logInBox">
                                                 <form onSubmit={this.handleSubmit}>
