@@ -34,18 +34,24 @@ export default class Visualizer extends React.Component {
                     name: '',
                     fields: [],
 					has: [],
-					belongsTo: []
+                    belongsTo: [],
+                    offset: 0
                 }
 			]
 
-		console.log('getting here', startTables)
         this.setState({
             tables: startTables
         })
     }
 
     addTable () {
-        const newTable = { name: '', fields: [], has: [], belongsTo: [] }
+        const newTable = {
+            name: '',
+            fields: [],
+            has: [],
+            belongsTo: [],
+            offset: this.state.tables.length * 164
+        }
         this.setState({ tables: [...this.state.tables, newTable] })
     }
 
@@ -64,7 +70,6 @@ export default class Visualizer extends React.Component {
     }
 
     handleChange (evt, selectedTable) {
-		console.log(this.state.tables.map(table => table === selectedTable), evt.target.name, evt.target.value)
         const tables = this.state.tables.map(table => table === selectedTable ? { ...table, [evt.target.name]: evt.target.value } : table)
         this.setState({
             tables
@@ -108,7 +113,7 @@ export default class Visualizer extends React.Component {
 				} else {
 					table.has = [...table.belongsTo.filter(table => table !== selectedTable)]
 				}
-			}
+            }
 			return table
 		})
 	]
@@ -122,12 +127,6 @@ export default class Visualizer extends React.Component {
     }
 
 	render () {
-		let offSetCounter = 0
-		// const renderTables = this.state.tables.map((table) => {
-		// 	const newTable = { ...table, offset: offSetCounter }
-		// 	offSetCounter = offSetCounter + 132 + (32 * table.fields.length)
-		// 	return newTable
-		// })
         return (
             <div className="fullBody">
                 <nav>
@@ -183,7 +182,7 @@ export default class Visualizer extends React.Component {
                                                     </div>
                                                     <button onClick={() => this.addField(table)}>Add Row</button>
                                                     <div className="allCheckParent" id="toCenter">
-                                                        <button>Belong To</button>
+                                                        <button>Belongs To</button>
                                                         <div className="hiddenCheck">
                                                             {
                                                                 arr.map((inTable, inInd) => {

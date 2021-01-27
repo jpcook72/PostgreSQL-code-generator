@@ -63,12 +63,10 @@ router.get('/schema/:schemaId', async (req, res, next) => {
         const { schemaId } = req.params
         const schemaFound = await Schema.findByPk(schemaId, { include: { all: true, nested: true } })
         if (schemaFound) {
-            console.log('getting in here')
             res.send(schemaFound)
         } else {
             await Schema.create({ id: schemaId })
             const newSchema = await Schema.findByPk(schemaId, { include: { all: true, nested: true } })
-            console.log('here', newSchema)
             res.send(newSchema)
         }
     } catch (err) {
