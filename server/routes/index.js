@@ -11,17 +11,16 @@ router.put('/schema/:schemaId', async (req, res, next) => {
         })
 
         // this destroys fields too
-        if (tables.length) await tables.destroy()
+        if (tables.length) await Promise.all(tables.map(table => table.destroy()))
 
         const newTables = [
-            ...req.body.tables
+            ...req.body
         ]
 
         // create promise arrays
         const tableAssociationsAndFieldsPromiseArr = []
         for (const table of newTables) {
             table.promise = Table.create({
-                id: Number(table.id),
                 name: table.name,
                 schemaId: req.params.schemaId
             })
@@ -29,14 +28,15 @@ router.put('/schema/:schemaId', async (req, res, next) => {
 
         const resolvedTablePromises = await Promise.all(newTables.map(table => table.promise))
         for (let i = 0; i < newTables.length; i++) {
-            req.body.tables[i].sequelizeTable = resolvedTablePromises[i].id
+            newTables[i].sequelizeTable = resolvedTablePromises[i].id
         }
 
         for (const table of newTables) {
             for (const hasTable of table.belongsTo) {
+                const hasTableFull = newTables.find(table => table.id === hasTable.id)
                 tableAssociationsAndFieldsPromiseArr.push(Association.create({
-                    hasId: hasTable.sequelizeTable.id,
-                    belongsToId: table.sequelizeTable.id
+                    hasId: hasTableFull.sequelizeTable,
+                    belongsToId: table.sequelizeTable
                 }))
             }
 
@@ -45,7 +45,7 @@ router.put('/schema/:schemaId', async (req, res, next) => {
                     name: field.name,
                     type: field.type,
                     allowNull: field.allowNull,
-                    tableId: table.sequelizeTable.id
+                    tableId: table.sequelizeTable
                 }))
             }
         }

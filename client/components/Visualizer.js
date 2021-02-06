@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable indent */
 /* eslint-disable no-tabs */
 import React from 'react'
@@ -11,7 +12,8 @@ export default class Visualizer extends React.Component {
         super(props)
         this.state = {
             showArrows: true,
-            tables: []
+            tables: [],
+            maxId: 1
         }
 		this.handleStop = this.handleStop.bind(this)
         this.handleStart = this.handleStart.bind(this)
@@ -31,28 +33,29 @@ export default class Visualizer extends React.Component {
             ? startState.data.tables
             : [
                 {
+                    id: 1,
                     name: '',
                     fields: [],
-					has: [],
                     belongsTo: [],
                     offset: 0
                 }
 			]
 
         this.setState({
-            tables: startTables
+            tables: startTables,
+            maxId: this.state.maxId + 1
         })
     }
 
     addTable () {
         const newTable = {
+            id: this.state.maxId,
             name: '',
             fields: [],
-            has: [],
             belongsTo: [],
             offset: this.state.tables.length * 164
         }
-        this.setState({ tables: [...this.state.tables, newTable] })
+        this.setState({ tables: [...this.state.tables, newTable], maxId: this.state.maxId + 1 })
     }
 
     addField (selectedTable) {
@@ -77,8 +80,8 @@ export default class Visualizer extends React.Component {
     }
 
     async saveSchema () {
-		const { schemaId } = this.props.match.params
-        const savedSchema = await axios.put(`/api/schema/${schemaId}`, this.state)
+        const { schemaId } = this.props.match.params
+        const savedSchema = await axios.put(`/api/schema/${schemaId}`, this.state.tables)
         this.setState({ tables: savedSchema.data.tables })
     }
 
@@ -102,16 +105,10 @@ export default class Visualizer extends React.Component {
     handleBelongsTo (evt, selectedTable, otherTable) {
 		const tables = [...this.state.tables.map(table => {
 			if (table === selectedTable) {
-				if (evt.target.checked) {
+				if (evt.target.checked && !otherTable.belongsTo.includes(selectedTable)) {
 					table.belongsTo = [...table.belongsTo, otherTable]
 				} else {
 					table.belongsTo = [...table.belongsTo.filter(table => table !== otherTable)]
-				}
-			} else if (table === otherTable) {
-				if (evt.target.checked) {
-					table.has = [...table.has, selectedTable]
-				} else {
-					table.has = [...table.belongsTo.filter(table => table !== selectedTable)]
 				}
             }
 			return table
