@@ -29,8 +29,15 @@ export default class Visualizer extends React.Component {
     async componentDidMount () {
 		const { schemaId } = this.props.match.params
         const startState = await axios.get(`/api/schema/${schemaId}`)
+        console.log('this is before', startState.data && startState.data.tables)
         const startTables = startState.data.tables.length
-            ? startState.data.tables
+            ? startState.data.tables.map((table, ind, arr) => {
+                table.id = ind + 1
+                table.belongsTo = table.belongsTo.map(matchTable => {
+                    return arr.find(checkTable => checkTable.id === matchTable.id)
+                })
+                return table
+            })
             : [
                 {
                     id: 1,
@@ -41,9 +48,10 @@ export default class Visualizer extends React.Component {
                 }
 			]
 
+        console.log('this is after', startTables, startTables[0])
         this.setState({
             tables: startTables,
-            maxId: this.state.maxId + 1
+            maxId: startTables.length + 1
         })
     }
 
@@ -81,8 +89,7 @@ export default class Visualizer extends React.Component {
 
     async saveSchema () {
         const { schemaId } = this.props.match.params
-        const savedSchema = await axios.put(`/api/schema/${schemaId}`, this.state.tables)
-        this.setState({ tables: savedSchema.data.tables })
+        await axios.put(`/api/schema/${schemaId}`, this.state.tables)
     }
 
     handleFieldChange (evt, selectedTable, selectedField) {

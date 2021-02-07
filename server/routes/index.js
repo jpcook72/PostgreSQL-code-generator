@@ -22,7 +22,8 @@ router.put('/schema/:schemaId', async (req, res, next) => {
         for (const table of newTables) {
             table.promise = Table.create({
                 name: table.name,
-                schemaId: req.params.schemaId
+                schemaId: req.params.schemaId,
+                offset: table.offset
             })
         }
 
