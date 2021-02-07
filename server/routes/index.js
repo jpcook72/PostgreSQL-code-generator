@@ -21,6 +21,7 @@ router.put('/schema/:schemaId', async (req, res, next) => {
         const tableAssociationsAndFieldsPromiseArr = []
         for (const table of newTables) {
             table.promise = Table.create({
+                frontId: table.frontId,
                 name: table.name,
                 schemaId: req.params.schemaId,
                 offset: table.offset
@@ -34,7 +35,7 @@ router.put('/schema/:schemaId', async (req, res, next) => {
 
         for (const table of newTables) {
             for (const hasTable of table.belongsTo) {
-                const hasTableFull = newTables.find(table => table.id === hasTable.id)
+                const hasTableFull = newTables.find(table => table.frontId === hasTable)
                 tableAssociationsAndFieldsPromiseArr.push(Association.create({
                     hasId: hasTableFull.sequelizeTable,
                     belongsToId: table.sequelizeTable
@@ -64,7 +65,12 @@ router.get('/schema/:schemaId', async (req, res, next) => {
         const { schemaId } = req.params
         const schemaFound = await Schema.findByPk(schemaId, { include: { all: true, nested: true } })
         if (schemaFound) {
-            res.send(schemaFound)
+            for (const table of schemaFound.tables) {
+                table.frontId = parseInt(table.frontId)
+                const belongsToObjects = [...table.belongsTo]
+                table.belongsTo = [...belongsToObjects.map(inTable => parseInt(inTable.frontId))]
+            }
+            res.send(schemaFound.tables)
         } else {
             await Schema.create({ id: schemaId })
             const newSchema = await Schema.findByPk(schemaId, { include: { all: true, nested: true } })

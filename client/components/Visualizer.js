@@ -29,38 +29,36 @@ export default class Visualizer extends React.Component {
     async componentDidMount () {
 		const { schemaId } = this.props.match.params
         const startState = await axios.get(`/api/schema/${schemaId}`)
-        console.log('this is before', startState.data && startState.data.tables)
-        const startTables = startState.data.tables.length
-            ? startState.data.tables.map((table, ind, arr) => {
-                table.id = ind + 1
-                table.belongsTo = table.belongsTo.map(matchTable => {
-                    return arr.find(checkTable => checkTable.id === matchTable.id)
-                })
+        const startTables = startState.data.length
+            ? startState.data.map(table => {
+                table.belongsTo = [...table.belongsTo.map(inTable => parseInt(inTable.frontId))]
+                table.has = [...table.has.map(inTable => parseInt(inTable.frontId))]
                 return table
             })
             : [
                 {
-                    id: 1,
+                    frontId: 1,
                     name: '',
                     fields: [],
                     belongsTo: [],
+                    has: [],
                     offset: 0
                 }
-			]
+            ]
 
-        console.log('this is after', startTables, startTables[0])
         this.setState({
             tables: startTables,
-            maxId: startTables.length + 1
+            maxId: Math.max(...startTables.map(table => table.frontId)) + 1
         })
     }
 
     addTable () {
         const newTable = {
-            id: this.state.maxId,
+            frontId: this.state.maxId,
             name: '',
             fields: [],
             belongsTo: [],
+            has: [],
             offset: this.state.tables.length * 164
         }
         this.setState({ tables: [...this.state.tables, newTable], maxId: this.state.maxId + 1 })
@@ -89,6 +87,7 @@ export default class Visualizer extends React.Component {
 
     async saveSchema () {
         const { schemaId } = this.props.match.params
+        console.log('this is what is going in api', this.state.tables)
         await axios.put(`/api/schema/${schemaId}`, this.state.tables)
     }
 
@@ -113,9 +112,16 @@ export default class Visualizer extends React.Component {
 		const tables = [...this.state.tables.map(table => {
 			if (table === selectedTable) {
 				if (evt.target.checked && !otherTable.belongsTo.includes(selectedTable)) {
-					table.belongsTo = [...table.belongsTo, otherTable]
+					table.belongsTo = [...table.belongsTo, otherTable.frontId]
 				} else {
-					table.belongsTo = [...table.belongsTo.filter(table => table !== otherTable)]
+					table.belongsTo = [...table.belongsTo.filter(table => table.frontId !== otherTable.frontId)]
+				}
+            }
+			if (table === otherTable) {
+				if (evt.target.checked && !selectedTable.has.includes(otherTable)) {
+					table.has = [...table.has, selectedTable.frontId]
+				} else {
+					table.has = [...table.belongsTo.filter(table => table.frontId !== selectedTable.frontId)]
 				}
             }
 			return table
@@ -149,8 +155,8 @@ export default class Visualizer extends React.Component {
                             return (
                                 <Draggable className="dragBox" key={table} axis="both" handle=".logInBox" defaultPosition={{ x: -595, y: 0 - offset }} bounds={{ left: -595, top: 0 - offset, right: 595, bottom: 435 - offset }} position={null} grid={[1, 1]} scale={1} onStart={this.handleStart} onDrag={this.handleDrag} onStop={this.handleStop}>
                                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                        <ArcherElement id={`table${table.name}`} relations={this.state.showArrows
-                                            ? table.belongsTo.map(belongsTo => ({ targetId: `table${belongsTo.name}`, targetAnchor: 'top', sourceAnchor: 'bottom' }))
+                                        <ArcherElement id={`${table.frontId}`} relations={this.state.showArrows
+                                            ? table.belongsTo.map(belongsTo => ({ targetId: `${belongsTo}`, targetAnchor: 'top', sourceAnchor: 'bottom' }))
                                             : []}>
                                             <div className="logInBox">
                                                 <form onSubmit={this.handleSubmit}>
@@ -194,7 +200,7 @@ export default class Visualizer extends React.Component {
                                                                         return (
                                                                             <div className="centerChecks">
                                                                                 <label htmlFor = "belongsTo">{`${inTable.name}`}</label>
-                                                                                <input name = "belongsTo" type="checkbox" onChange ={(e) => this.handleBelongsTo(e, table, inTable)} checked={table.belongsTo.includes(inTable)} />
+                                                                                <input name = "belongsTo" type="checkbox" onChange ={(e) => this.handleBelongsTo(e, table, inTable)} checked={table.belongsTo.includes(inTable.frontId)} />
                                                                             </div>)
 																	} else {
 																		return (null)

@@ -11,6 +11,9 @@ const Schema = db.define('schema', {
 })
 
 const Table = db.define('table', {
+    frontId: {
+        type: Sequelize.STRING
+    },
     name: {
         type: Sequelize.STRING
     },
