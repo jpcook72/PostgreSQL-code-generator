@@ -35,7 +35,7 @@ router.put('/schema/:schemaId', async (req, res, next) => {
 
         for (const table of newTables) {
             for (const hasTable of table.belongsTo) {
-                const hasTableFull = newTables.find(table => table.frontId === hasTable)
+                const hasTableFull = newTables.find(tbl => tbl.frontId === hasTable)
                 tableAssociationsAndFieldsPromiseArr.push(Association.create({
                     hasId: hasTableFull.sequelizeTable,
                     belongsToId: table.sequelizeTable

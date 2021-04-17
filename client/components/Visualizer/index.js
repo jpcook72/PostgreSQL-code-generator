@@ -114,14 +114,14 @@ export default class Visualizer extends React.Component {
                 if (evt.target.checked && !otherTable.belongsTo.includes(selectedTable)) {
                     table.belongsTo = [...table.belongsTo, otherTable.frontId]
                 } else {
-                    table.belongsTo = [...table.belongsTo.filter(table => table.frontId !== otherTable.frontId)]
+                    table.belongsTo = [...table.belongsTo.filter(tbl => tbl.frontId !== otherTable.frontId)]
                 }
             }
             if (table === otherTable) {
                 if (evt.target.checked && !selectedTable.has.includes(otherTable)) {
                     table.has = [...table.has, selectedTable.frontId]
                 } else {
-                    table.has = [...table.belongsTo.filter(table => table.frontId !== selectedTable.frontId)]
+                    table.has = [...table.belongsTo.filter(tbl => tbl.frontId !== selectedTable.frontId)]
                 }
             }
             return table
