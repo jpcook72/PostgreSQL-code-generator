@@ -84,11 +84,9 @@ export default class Visualizer extends React.Component {
     }
 
     addField (evt, selectedTable) {
-        console.log('in addField')
         const newField = { name: '', type: 'string', allowNull: true }
         const tables = [...this.state.tables.map(table => table === selectedTable ? { ...table, fields: [...table.fields, newField] } : table)]
         this.setState({ tables })
-        console.log('post setstate')
     }
 
     handleFieldChange (evt, selectedTable, selectedField) {
