@@ -12,6 +12,7 @@ export default class Visualizer extends React.Component {
         this.state = {
             showArrows: true,
             tables: [],
+            schemaId: null,
             maxId: 1
         }
         this.addTable = this.addTable.bind(this)
@@ -27,8 +28,8 @@ export default class Visualizer extends React.Component {
     async componentDidMount () {
 		const { schemaId } = this.props.match.params
         const startState = await axios.get(`/api/schema/${schemaId}`)
-        const startTables = startState.data.length
-            ? startState.data.map(table => {
+        const startTables = startState.data.tables.length
+            ? startState.data.tables.map(table => {
                 const belongsToOut = [...table.belongsTo]
                 table.belongsTo = [...table.has.map(inTable => parseInt(inTable.frontId))]
                 table.has = [belongsToOut.map(inTable => parseInt(inTable.frontId))]
@@ -47,7 +48,8 @@ export default class Visualizer extends React.Component {
 
         this.setState({
             tables: startTables,
-            maxId: Math.max(...startTables.map(table => table.frontId)) + 1
+            maxId: Math.max(...startTables.map(table => table.frontId)) + 1,
+            schemaId
         })
     }
 
@@ -130,6 +132,7 @@ export default class Visualizer extends React.Component {
     }
 
 	render () {
+        const { schemaId } = this.state
         return (
             <div className="fullBody">
                 <nav>
@@ -137,7 +140,7 @@ export default class Visualizer extends React.Component {
                         <button style={{ 'margin-right': '2px' }} onClick={this.saveSchema}><i className="far fa-save"></i></button>
                         <button style={{ 'margin-left': '2px' }} onClick={this.addTable}>+</button>
                     </div>
-                    <h3>Test DB</h3>
+                    <h3>{schemaId || 'Loading...'}</h3>
                     <div><Link to="/"><button ><i className="fas fa-home"></i></button></Link></div>
 
                 </nav>

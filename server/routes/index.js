@@ -70,7 +70,7 @@ router.get('/schema/:schemaId', async (req, res, next) => {
                 const belongsToObjects = [...table.belongsTo]
                 table.belongsTo = [...belongsToObjects.map(inTable => parseInt(inTable.frontId))]
             }
-            res.send(schemaFound.tables)
+            res.send(schemaFound)
         } else {
             await Schema.create({ id: schemaId })
             const newSchema = await Schema.findByPk(schemaId, { include: { all: true, nested: true } })
