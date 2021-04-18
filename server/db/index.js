@@ -16,9 +16,6 @@ const Table = db.define('table', {
     },
     name: {
         type: Sequelize.STRING
-    },
-    offset: {
-        type: Sequelize.INTEGER
     }
 })
 

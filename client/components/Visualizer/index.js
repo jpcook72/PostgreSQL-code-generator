@@ -41,8 +41,7 @@ export default class Visualizer extends React.Component {
                     name: '',
                     fields: [],
                     belongsTo: [],
-                    has: [],
-                    offset: 0
+                    has: []
                 }
             ]
 
@@ -59,8 +58,7 @@ export default class Visualizer extends React.Component {
             name: '',
             fields: [],
             belongsTo: [],
-            has: [],
-            offset: this.state.tables.length * 164
+            has: []
         }
         this.setState({ tables: [...this.state.tables, newTable], maxId: this.state.maxId + 1 })
     }
