@@ -11,10 +11,10 @@ export default class SchemaContainer extends React.Component {
         return (
             <div className="schemaContainer">
                 <ArcherContainer strokeColor='red'>
-                    <div style={{ display: 'flex' }}>
+                    <div className="dragBoxContainerRow">
                         {state.tables.map((table, ind, arr) => {
                             return (
-                                <div style={{ width: '209px' }} key={table}>
+                                <div className="dragBoxContainer" key={table}>
                                     <Draggable className="dragBox"
                                         axis="both"
                                         handle=".logInBox"
@@ -24,7 +24,7 @@ export default class SchemaContainer extends React.Component {
                                         onDrag={this.handleDrag}
                                         onStop={handleStop}
                                     >
-                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <div>
                                             <ArcherElement
                                                 id={`${table.frontId}`}
                                                 relations={ state.showArrows

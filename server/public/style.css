@@ -234,3 +234,12 @@ select {
     justify-content: center;
     align-content: center;
 }
+
+
+.dragBoxContainerRow {
+    display: flex;
+}
+
+.dragBoxContainer {
+    width: 209px;
+}
