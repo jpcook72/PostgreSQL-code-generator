@@ -131,6 +131,7 @@ export default class Visualizer extends React.Component {
 
 	render () {
         const { schemaId } = this.state
+        console.log(process.env.DATABASE_URL)
         return (
             <div className="fullBody">
                 <nav>
