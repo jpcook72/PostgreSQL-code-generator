@@ -2,7 +2,16 @@ const Sequelize = require('sequelize')
 const pg = require('pg')
 pg.defaults.ssl = true
 
-const db = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/pg-visualizer', { logging: false })
+let db
+if (process.env.DATABASE_URL) {
+    db = new Sequelize(process.env.DATABASE_URL, {
+        dialect: 'postgres',
+        protocol: 'postgres',
+        logging: true
+    })
+} else {
+    db = new Sequelize('postgres://localhost/pg-visualizer', { logging: false })
+}
 
 const Schema = db.define('schema', {
     id: {
