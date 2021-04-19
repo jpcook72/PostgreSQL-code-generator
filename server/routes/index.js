@@ -80,6 +80,16 @@ router.get('/schema/:schemaId', async (req, res, next) => {
     }
 })
 
+router.get('/test', async (req, res, next) => {
+    try {
+        await Schema.create({ id: 1 })
+        const newSchema = await Schema.findByPk(1, { include: { all: true, nested: true } })
+        res.send(newSchema)
+    } catch (err) {
+        next(err)
+    }
+})
+
 router.use((req, res, next) => {
     const err = new Error('API route not found!')
     err.status = 404
