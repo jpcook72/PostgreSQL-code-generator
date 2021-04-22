@@ -5,7 +5,7 @@ export enum FieldTypes {
     Boolean = 'boolean',
   }
 
-export interface Field {
+export interface schemaField {
     name: string,
     type: FieldTypes,
     allowNull: boolean
@@ -14,7 +14,7 @@ export interface Field {
 export interface schemaTable {
     frontId: number,
     name: string,
-    fields: Field[],
+    fields: schemaField[],
     belongsTo: number[],
     has: number[]
 }

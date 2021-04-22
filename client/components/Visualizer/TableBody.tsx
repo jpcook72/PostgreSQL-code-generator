@@ -1,20 +1,32 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
+import React, { FunctionComponent } from 'react'
+import { schemaTable, schemaField } from '../../interfaces'
 
-export default function TableBody (props) {
+interface TableBodyProps {
+    table: schemaTable,
+    handleFieldChange: (evt: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>, selectedTable: schemaTable, selectedField: schemaField) => void
+}
+
+const TableBody: FunctionComponent<TableBodyProps> = (props: TableBodyProps) => {
 	const { table, handleFieldChange } = props
 	return (
 		<div className="formBody">
 			<div className="formRowMain">
-				<div style={{ 'margin-right': '13px' }}>Field</div>
-				<div style={{ 'margin-left': '13px' }}>Type</div>
+				<div className="formRowMainLeftHeader">Field</div>
+				<div className="formRowMainRightHeader">Type</div>
 			</div>
 			{
-				table.fields.map(field => {
+				table.fields.map((field, idx) => {
 					return (
-						<div key={field} className="formRowParent">
+						<div key={idx} className="formRowParent">
 							<div className="formRowMain">
-								<div className="halfRow"><input name="name" placeholder="Name..." onChange={(e) => handleFieldChange(e, table, field)} value={field.name} /></div>
+								<div className="halfRow">
+									<input name="name"
+										placeholder="Name..."
+										onChange={(e) => handleFieldChange(e, table, field)}
+										value={field.name}
+									/>
+								</div>
 								<div className="halfRow">
 									<select name="type" onChange={(e) => handleFieldChange(e, table, field)}>
 										<option value="string">String</option>
@@ -34,3 +46,5 @@ export default function TableBody (props) {
 		</div>
 	)
 }
+
+export default TableBody

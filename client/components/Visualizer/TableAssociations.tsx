@@ -8,7 +8,7 @@ interface TableAssociationProps {
 	handleBelongsTo: (evt: React.ChangeEvent<HTMLInputElement>, selectedTable: schemaTable, otherTable: schemaTable) => schemaTable
 }
 
-export const TableAssociations: FunctionComponent<TableAssociationProps> = (props) => {
+const TableAssociations: FunctionComponent<TableAssociationProps> = (props) => {
 	const { arr, table, handleBelongsTo } = props
 	return (
 		<div className="allCheckParent" id="toCenter">
@@ -31,3 +31,5 @@ export const TableAssociations: FunctionComponent<TableAssociationProps> = (prop
 		</div>
 	)
 }
+
+export default TableAssociations

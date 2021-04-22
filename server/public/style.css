@@ -243,3 +243,11 @@ select {
 .dragBoxContainer {
     width: 209px;
 }
+
+.formRowMainLeftHeader {
+    margin-right: 13px;
+}
+
+.formRowMainRightHeader {
+    margin-left: 13px;
+}
