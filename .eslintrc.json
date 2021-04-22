@@ -4,9 +4,12 @@
         "commonjs": true,
         "es2021": true
     },
+    "parser": "@typescript-eslint/parser",
     "extends": [
         "plugin:react/recommended",
-        "standard"
+        "standard",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -15,9 +18,11 @@
         "ecmaVersion": 12
     },
     "plugins": [
-        "react"
+        "react",
+        "@typescript-eslint"
     ],
     "rules": {
-        "indent": [2, 4]
+        "indent": ["error", "tab"],
+        "no-tabs": 0
     }
 }
