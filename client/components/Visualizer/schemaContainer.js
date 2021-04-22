@@ -3,7 +3,7 @@ import React from 'react'
 import Draggable from 'react-draggable'
 import { ArcherContainer, ArcherElement } from 'react-archer'
 import TableBody from './TableBody.js'
-import TableAssociations from './TableAssociations.js'
+import { TableAssociations } from './TableAssociations'
 
 export default class SchemaContainer extends React.Component {
 	render () {

@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-tabs */
 import React from 'react'
-import SchemaContainer from './schemaContainer.js'
+import SchemaContainer from './schemaContainer'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
