@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import React, { FunctionComponent } from 'react'
-import { schemaTable, schemaField } from '../../interfaces'
+import { SchemaTable, SchemaField } from '../../interfaces'
 
 interface TableBodyProps {
-    table: schemaTable,
-    handleFieldChange: (evt: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>, selectedTable: schemaTable, selectedField: schemaField) => void
+    table: SchemaTable,
+    handleFieldChange: (evt: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>, selectedTable: SchemaTable, selectedField: SchemaField) => void
 }
 
 const TableBody: FunctionComponent<TableBodyProps> = (props: TableBodyProps) => {

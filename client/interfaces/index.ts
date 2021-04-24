@@ -5,16 +5,23 @@ export enum FieldTypes {
     Boolean = 'boolean',
   }
 
-export interface schemaField {
+export interface SchemaField {
     name: string,
     type: FieldTypes,
     allowNull: boolean
 }
 
-export interface schemaTable {
+export interface SchemaTable {
     frontId: number,
     name: string,
-    fields: schemaField[],
+    fields: SchemaField[],
     belongsTo: number[],
     has: number[]
+}
+
+export interface VisualizerState {
+    showArrows: boolean,
+    tables: SchemaTable[],
+    schemaId: number | null,
+    maxId: number
 }

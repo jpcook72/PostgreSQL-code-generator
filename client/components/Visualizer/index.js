@@ -68,11 +68,11 @@ export default class Visualizer extends React.Component {
         await axios.put(`/api/schema/${schemaId}`, this.state.tables)
     }
 
-    handleStart (e, data) {
+    handleStart (e) {
         this.setState({ showArrows: false })
     }
 
-    handleStop (e, data) {
+    handleStop (e) {
         this.setState({ showArrows: true })
     }
 

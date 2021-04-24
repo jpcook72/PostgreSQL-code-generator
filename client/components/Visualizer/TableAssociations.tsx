@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import React, { FunctionComponent } from 'react'
-import { schemaTable } from '../../interfaces'
+import { SchemaTable } from '../../interfaces'
 
 interface TableAssociationProps {
-	table: schemaTable,
-	arr: schemaTable[],
-	handleBelongsTo: (evt: React.ChangeEvent<HTMLInputElement>, selectedTable: schemaTable, otherTable: schemaTable) => schemaTable
+	table: SchemaTable,
+	arr: SchemaTable[],
+	handleBelongsTo: (evt: React.ChangeEvent<HTMLInputElement>, selectedTable: SchemaTable, otherTable: SchemaTable) => SchemaTable
 }
 
 const TableAssociations: FunctionComponent<TableAssociationProps> = (props) => {
