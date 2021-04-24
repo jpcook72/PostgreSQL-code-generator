@@ -1,9 +1,17 @@
-import React from 'react'
+import React, { ChangeEvent, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 
-export default class LaunchPage extends React.Component {
-	constructor () {
-		super()
+type LaunchPageProps = Record<string, never>
+
+interface LaunchPageState {
+	name: string,
+	key: string,
+	[name: string]: string
+}
+
+export default class LaunchPage extends React.Component<LaunchPageProps, LaunchPageState> {
+	constructor (props: LaunchPageProps) {
+		super(props)
 		this.state = {
 			name: '',
 			key: ''
@@ -12,18 +20,18 @@ export default class LaunchPage extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this)
 	}
 
-	handleChange (evt) {
+	handleChange (evt: ChangeEvent<HTMLInputElement>): void {
 		this.setState({
 			[evt.target.name]: evt.target.value
 		})
 	}
 
-	handleSubmit (evt) {
+	handleSubmit (evt: FormEvent<HTMLFormElement>): void {
 		evt.preventDefault()
 		this.setState({ name: '', key: '' })
 	}
 
-	render () {
+	render (): JSX.Element {
 		return (
 			<div className="flexContainer">
 				<h3>Postgres Schema Maker</h3>
