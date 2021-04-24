@@ -4,10 +4,11 @@
 import React from 'react'
 import SchemaContainer from './schemaContainer'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, RouteComponentProps } from 'react-router-dom'
+import { SchemaTable, SchemaField } from '../../interfaces'
 
 export default class Visualizer extends React.Component {
-    constructor (props) {
+    constructor (props: RouteComponentProps) {
         super(props)
         this.state = {
             showArrows: true,
@@ -25,13 +26,13 @@ export default class Visualizer extends React.Component {
         this.handleBelongsTo = this.handleBelongsTo.bind(this)
     }
 
-    async componentDidMount () {
+    async componentDidMount (): void {
 		const { schemaId } = this.props.match.params
         const startState = await axios.get(`/api/schema/${schemaId}`)
         const startTables = startState.data.tables.length
             ? startState.data.tables.map(table => {
                 const belongsToOut = [...table.belongsTo]
-                table.belongsTo = [...table.has.map(inTable => parseInt(inTable.frontId))]
+                table.belongsTo = [...table.has.map((inTable, schemaTable) => parseInt(inTable.frontId))]
                 table.has = [belongsToOut.map(inTable => parseInt(inTable.frontId))]
                 return table
             })
