@@ -5,8 +5,7 @@ type LaunchPageProps = Record<string, never>
 
 interface LaunchPageState {
 	name: string,
-	key: string,
-	[name: string]: string
+	key: string
 }
 
 export default class LaunchPage extends React.Component<LaunchPageProps, LaunchPageState> {
@@ -22,7 +21,7 @@ export default class LaunchPage extends React.Component<LaunchPageProps, LaunchP
 
 	handleChange (evt: ChangeEvent<HTMLInputElement>): void {
 		this.setState({
-			[evt.target.name]: evt.target.value
+			key: evt.target.value
 		})
 	}
 
