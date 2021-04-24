@@ -251,3 +251,11 @@ select {
 .formRowMainRightHeader {
     margin-left: 13px;
 }
+
+.saveButton {
+    margin-right: 2px;
+}
+
+.addTableButton {
+    margin-left: 2px;
+}

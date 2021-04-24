@@ -1,14 +1,20 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable indent */
 /* eslint-disable no-tabs */
-import React from 'react'
+import React, { ChangeEvent, MouseEvent } from 'react'
 import SchemaContainer from './schemaContainer'
 import axios from 'axios'
 import { Link, RouteComponentProps } from 'react-router-dom'
-import { SchemaTable, SchemaField } from '../../interfaces'
+import { SchemaTable, SchemaField, VisualizerState, FieldTypes } from '../../interfaces'
 
-export default class Visualizer extends React.Component {
-    constructor (props: RouteComponentProps) {
+interface MatchParams {
+    schemaId: string;
+}
+
+type RouteComponentPropsMatch = RouteComponentProps<MatchParams>
+
+export default class Visualizer extends React.Component<RouteComponentPropsMatch, VisualizerState> {
+    constructor (props: RouteComponentPropsMatch) {
         super(props)
         this.state = {
             showArrows: true,
@@ -26,14 +32,14 @@ export default class Visualizer extends React.Component {
         this.handleBelongsTo = this.handleBelongsTo.bind(this)
     }
 
-    async componentDidMount (): void {
+    async componentDidMount (): Promise<void> {
 		const { schemaId } = this.props.match.params
         const startState = await axios.get(`/api/schema/${schemaId}`)
         const startTables = startState.data.tables.length
-            ? startState.data.tables.map(table => {
+            ? startState.data.tables.map((table: SchemaTable) => {
                 const belongsToOut = [...table.belongsTo]
-                table.belongsTo = [...table.has.map((inTable, schemaTable) => parseInt(inTable.frontId))]
-                table.has = [belongsToOut.map(inTable => parseInt(inTable.frontId))]
+                table.belongsTo = [...table.has.map((inTable: number) => inTable)]
+                table.has = [...belongsToOut]
                 return table
             })
             : [
@@ -48,12 +54,12 @@ export default class Visualizer extends React.Component {
 
         this.setState({
             tables: startTables,
-            maxId: Math.max(...startTables.map(table => table.frontId)) + 1,
+            maxId: Math.max(...startTables.map((table: SchemaTable) => table.frontId)) + 1,
             schemaId
         })
     }
 
-    addTable () {
+    addTable (): void {
         const newTable = {
             frontId: this.state.maxId,
             name: '',
@@ -64,34 +70,34 @@ export default class Visualizer extends React.Component {
         this.setState({ tables: [...this.state.tables, newTable], maxId: this.state.maxId + 1 })
     }
 
-    async saveSchema () {
+    async saveSchema (): Promise<void> {
         const { schemaId } = this.props.match.params
         await axios.put(`/api/schema/${schemaId}`, this.state.tables)
     }
 
-    handleStart (e) {
+    handleStart (): void {
         this.setState({ showArrows: false })
     }
 
-    handleStop (e) {
+    handleStop (): void {
         this.setState({ showArrows: true })
     }
 
-    handleChange (evt, selectedTable) {
+    handleChange (evt: ChangeEvent<HTMLInputElement>, selectedTable: SchemaTable): void {
         const tables = this.state.tables.map(table => table === selectedTable ? { ...table, [evt.target.name]: evt.target.value } : table)
         this.setState({
             tables
         })
     }
 
-    addField (evt, selectedTable) {
-        const newField = { name: '', type: 'string', allowNull: true }
+    addField (evt: MouseEvent, selectedTable: SchemaTable): void {
+        const newField: SchemaField = { name: '', type: FieldTypes.String, allowNull: true }
         const tables = [...this.state.tables.map(table => table === selectedTable ? { ...table, fields: [...table.fields, newField] } : table)]
         this.setState({ tables })
     }
 
-    handleFieldChange (evt, selectedTable, selectedField) {
-        const value = evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value
+    handleFieldChange (evt: ChangeEvent<HTMLSelectElement | HTMLInputElement>, selectedTable: SchemaTable, selectedField: SchemaField): void {
+        const value = evt.target.type === 'checkbox' && ('checked' in evt.target) ? evt.target.checked : evt.target.value
         const tables = [...this.state.tables.map(table =>
             table === selectedTable
                 ? {
@@ -107,20 +113,20 @@ export default class Visualizer extends React.Component {
         })
     }
 
-    handleBelongsTo (evt, selectedTable, otherTable) {
+    handleBelongsTo (evt: ChangeEvent<HTMLInputElement>, selectedTable: SchemaTable, otherTable: SchemaTable): void {
         const tables = [...this.state.tables.map(table => {
             if (table === selectedTable) {
-                if (evt.target.checked && !otherTable.belongsTo.includes(selectedTable)) {
+                if (evt.target.checked && !otherTable.belongsTo.includes(selectedTable.frontId)) {
                     table.belongsTo = [...table.belongsTo, otherTable.frontId]
                 } else {
-                    table.belongsTo = [...table.belongsTo.filter(tbl => tbl.frontId !== otherTable.frontId)]
+                    table.belongsTo = [...table.belongsTo.filter((frontId: number) => frontId !== otherTable.frontId)]
                 }
             }
             if (table === otherTable) {
-                if (evt.target.checked && !selectedTable.has.includes(otherTable)) {
+                if (evt.target.checked && !selectedTable.has.includes(otherTable.frontId)) {
                     table.has = [...table.has, selectedTable.frontId]
                 } else {
-                    table.has = [...table.belongsTo.filter(tbl => tbl.frontId !== selectedTable.frontId)]
+                    table.has = [...table.belongsTo.filter((frontId: number) => frontId !== selectedTable.frontId)]
                 }
             }
             return table
@@ -130,14 +136,14 @@ export default class Visualizer extends React.Component {
         this.setState({ tables })
     }
 
-	render () {
+	render (): JSX.Element {
         const { schemaId } = this.state
         return (
             <div className="fullBody">
                 <nav>
                     <div className="flexButtonContainer">
-                        <button style={{ 'margin-right': '2px' }} onClick={this.saveSchema}><i className="far fa-save"></i></button>
-                        <button style={{ 'margin-left': '2px' }} onClick={this.addTable}>+</button>
+                        <button className="saveButton" onClick={this.saveSchema}><i className="far fa-save"></i></button>
+                        <button className="addTableButton" onClick={this.addTable}>+</button>
                     </div>
                     <h3>{schemaId || 'Loading...'}</h3>
                     <div><Link to="/"><button ><i className="fas fa-home"></i></button></Link></div>

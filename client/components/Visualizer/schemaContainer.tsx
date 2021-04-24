@@ -13,7 +13,7 @@ interface SchemaContainerProps {
 	handleChange: (evt: ChangeEvent<HTMLInputElement>, table: SchemaTable) => void,
     handleFieldChange: (evt: ChangeEvent<HTMLSelectElement | HTMLInputElement>, selectedTable: SchemaTable, selectedField: SchemaField) => void
 	addField: (evt: MouseEvent, table: SchemaTable) => void,
-	handleBelongsTo: (evt: ChangeEvent<HTMLInputElement>, selectedTable: SchemaTable, otherTable: SchemaTable) => SchemaTable
+	handleBelongsTo: (evt: ChangeEvent<HTMLInputElement>, selectedTable: SchemaTable, otherTable: SchemaTable) => void
 }
 
 const SchemaContainer: FunctionComponent<SchemaContainerProps> = (props) => {

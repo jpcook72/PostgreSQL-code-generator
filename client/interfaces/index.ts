@@ -22,6 +22,6 @@ export interface SchemaTable {
 export interface VisualizerState {
     showArrows: boolean,
     tables: SchemaTable[],
-    schemaId: number | null,
+    schemaId: string | null,
     maxId: number
 }

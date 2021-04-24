@@ -5,7 +5,7 @@ import { SchemaTable } from '../../interfaces'
 interface TableAssociationProps {
 	table: SchemaTable,
 	arr: SchemaTable[],
-	handleBelongsTo: (evt: React.ChangeEvent<HTMLInputElement>, selectedTable: SchemaTable, otherTable: SchemaTable) => SchemaTable
+	handleBelongsTo: (evt: React.ChangeEvent<HTMLInputElement>, selectedTable: SchemaTable, otherTable: SchemaTable) => void
 }
 
 const TableAssociations: FunctionComponent<TableAssociationProps> = (props) => {
