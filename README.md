@@ -1,4 +1,4 @@
-pg-visualizer is a database scema tool that can be paired with pg-auto-write (node module) to auto-generate the PostgreSQL code for modelling the database.
+pg-visualizer is a database schema tool that can be paired with pg-auto-write (node module) to auto-generate the PostgreSQL code for modeling the database.
 
 Go to https://pg-visualizer.herokuapp.com/ and save a database model schema.
 
@@ -23,7 +23,7 @@ app.use(express.json());
 const init = async() => {
     try {
         await DBsync(db)
-        const port = process.env.PORT || 8081;
+        const port = process.env.PORT || 8080;
         app.listen(port, ()=> console.log(`listening on port ${port}`));
     }
     catch(ex){
