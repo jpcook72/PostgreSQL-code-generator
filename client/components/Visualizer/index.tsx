@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-tabs */
 import React, { ChangeEvent, MouseEvent } from 'react'
-import SchemaContainer from './schemaContainer'
+import SchemaContainer from './SchemaContainer'
 import axios from 'axios'
 import { Link, RouteComponentProps } from 'react-router-dom'
 import { SchemaTable, SchemaField, VisualizerState, FieldTypes } from '../../interfaces'

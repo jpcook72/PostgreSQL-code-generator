@@ -25,7 +25,7 @@ app.use((err, req, res, next) => {
 const init = async () => {
     try {
         db.sync({ force: true })
-        const port = process.env.PORT || 3035
+        const port = process.env.PORT || 8080
         app.listen(port, () => console.log(`listening on port ${port}`))
     } catch (ex) {
         console.log(ex)
