@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express'
-import { Schema, Table, Field, Association } from '../db'
+import { Schema, Table, Field, Association, SchemaInstance } from '../db'
+import { Model, Optional, WhereOptions } from 'Sequelize'
 const router = express.Router()
 
 interface ResponseError extends Error {
@@ -9,14 +10,14 @@ interface ResponseError extends Error {
 router.put('/schema/:schemaId', async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		// find tables
-		const tables = await Table.findAll({
+		const tables = await Table.findAll<Model<WhereOptions, SchemaInstance>>({
 			where: {
 				schemaId: req.params.schemaId
 			}
 		})
 
 		// this destroys fields too
-		// if (tables.length) await Promise.all(tables.map(table => table.destroy()))
+		if (tables.length) await Promise.all(tables.map(table => table.destroy()))
 
 		const newTables = [
 			...req.body
@@ -70,9 +71,8 @@ router.get('/schema/:schemaId', async (req: Request, res: Response, next: NextFu
 		const schemaFound = await Schema.findByPk(schemaId, { include: { all: true, nested: true } })
 		if (schemaFound) {
 			for (const table of schemaFound.tables) {
-				table.frontId = parseInt(table.frontId)
 				const belongsToObjects = [...table.belongsTo]
-				table.belongsTo = [...belongsToObjects.map(inTable => parseInt(inTable.frontId))]
+				table.belongsTo = [...belongsToObjects.map(inTable => inTable.frontId)]
 			}
 			res.send(schemaFound)
 		} else {
