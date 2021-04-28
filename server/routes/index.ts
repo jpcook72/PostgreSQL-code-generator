@@ -1,7 +1,12 @@
-const router = require('express').Router()
-const { Schema, Table, Field, Association } = require('../db')
+import express, { Request, Response, NextFunction } from 'express'
+import { Schema, Table, Field, Association } from '../db'
+const router = express.Router()
 
-router.put('/schema/:schemaId', async (req, res, next) => {
+interface ResponseError extends Error {
+    status?: number;
+}
+
+router.put('/schema/:schemaId', async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		// find tables
 		const tables = await Table.findAll({
@@ -11,7 +16,7 @@ router.put('/schema/:schemaId', async (req, res, next) => {
 		})
 
 		// this destroys fields too
-		if (tables.length) await Promise.all(tables.map(table => table.destroy()))
+		// if (tables.length) await Promise.all(tables.map(table => table.destroy()))
 
 		const newTables = [
 			...req.body
@@ -59,7 +64,7 @@ router.put('/schema/:schemaId', async (req, res, next) => {
 	}
 })
 
-router.get('/schema/:schemaId', async (req, res, next) => {
+router.get('/schema/:schemaId', async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { schemaId } = req.params
 		const schemaFound = await Schema.findByPk(schemaId, { include: { all: true, nested: true } })
@@ -80,7 +85,7 @@ router.get('/schema/:schemaId', async (req, res, next) => {
 	}
 })
 
-router.get('/test', async (req, res, next) => {
+router.get('/test', async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		await Schema.create({ id: 1 })
 		const newSchema = await Schema.findByPk(1, { include: { all: true, nested: true } })
@@ -90,10 +95,10 @@ router.get('/test', async (req, res, next) => {
 	}
 })
 
-router.use((req, res, next) => {
-	const err = new Error('API route not found!')
+router.use((req: Request, res: Response, next: NextFunction) => {
+	const err: ResponseError = new Error('API route not found!')
 	err.status = 404
 	next(err)
 })
 
-module.exports = router
+export default router
