@@ -59,6 +59,12 @@ export default class Visualizer extends React.Component<RouteComponentPropsMatch
         })
     }
 
+    componentWillUnmount (): void {
+        this.setState = () => {
+            return null
+        }
+    }
+
     addTable (): void {
         const newTable = {
             frontId: this.state.maxId,

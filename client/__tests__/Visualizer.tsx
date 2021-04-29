@@ -1,9 +1,5 @@
-// when user clicks add add table
-// when user clicks home back to home page
-// when user clicks save api request
-
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, cleanup } from '@testing-library/react'
 import Visualizer from '../components/Visualizer'
 import { MemoryRouter } from 'react-router-dom'
 import { createMemoryHistory, createLocation } from 'history'
@@ -23,14 +19,6 @@ const server = setupServer(
 	})
 )
 
-// establish API mocking before all tests
-beforeAll(() => server.listen())
-// reset any request handlers that are declared as a part of our tests
-// (i.e. for testing one-time error scenarios)
-afterEach(() => server.resetHandlers())
-// clean up once the tests are done
-afterAll(() => server.close())
-
 const history = createMemoryHistory()
 
 const match: match<{ schemaId: string }> = {
@@ -42,18 +30,37 @@ const match: match<{ schemaId: string }> = {
 
 const location = createLocation(match.url)
 
-describe('LaunchPage', () => {
-	test('"New Schema" link points to visualizer page', async () => {
-		render(
-			<MemoryRouter>
-				<Visualizer match={match} history={history} location={location} />
-			</MemoryRouter>
-		)
+describe('Visualizer Page', () => {
+	beforeAll(() => server.listen())
+	afterEach(() => server.resetHandlers())
+	afterAll(() => server.close())
 
-		const initialHeader = screen.getByRole('heading', { name: /Loading.../i })
-		expect(initialHeader).toBeInTheDocument()
-
-		const loadedHeader = await screen.findByRole('heading', { name: /ABC123/i })
-		expect(loadedHeader).toBeInTheDocument()
+	describe('Generates a new schema properly', () => {
+		beforeEach(() => {
+			render(
+				<MemoryRouter>
+					<Visualizer match={match} history={history} location={location} />
+				</MemoryRouter>
+			)
+		})
+		afterEach(() => {
+			cleanup()
+		})
+		test('Page has correct default state', () => {
+			const initialHeader = screen.getByRole('heading', { name: /Loading.../i })
+			expect(initialHeader).toBeInTheDocument()
+		})
+		test('SchemaId loads properly after GET request', async () => {
+			const loadedHeader = await screen.findByRole('heading', { name: /ABC123/i })
+			expect(loadedHeader).toBeInTheDocument()
+		})
+		test('Page can be loaded again with no issues', () => {
+			const loadedHeader = screen.getByRole('heading', { name: /Loading.../i })
+			expect(loadedHeader).toBeInTheDocument()
+		})
 	})
 })
+
+// when user clicks add add table
+// when user clicks home back to home page
+// when user clicks save api request
