@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 
 describe('LaunchPage', () => {
-	test('"New Schema" link points to visualizer page', async () => {
+	test('"New Schema" link points to visualizer page', () => {
 		render(
 			<MemoryRouter>
 				<App />
