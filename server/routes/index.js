@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const router = require('express').Router()
 const { Schema, Table, Field, Association } = require('../db')
 
