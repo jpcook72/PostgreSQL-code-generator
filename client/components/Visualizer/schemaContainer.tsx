@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { FunctionComponent, ChangeEvent, MouseEvent } from 'react'
 import Draggable, { DraggableEventHandler } from 'react-draggable'
 import { ArcherContainer, ArcherElement } from 'react-archer'
@@ -16,7 +15,7 @@ interface SchemaContainerProps {
 	handleBelongsTo: (evt: ChangeEvent<HTMLInputElement>, selectedTable: SchemaTable, otherTable: SchemaTable) => void
 }
 
-const SchemaContainer: FunctionComponent<SchemaContainerProps> = (props) => {
+const SchemaContainer: FunctionComponent<SchemaContainerProps> = (props: SchemaContainerProps) => {
 	const { state, handleStop, handleStart, handleChange, handleFieldChange, addField, handleBelongsTo } = props
 	return (
 		<div className="schemaContainer">

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { FunctionComponent } from 'react'
 import { SchemaTable } from '../../interfaces'
 
@@ -8,7 +7,7 @@ interface TableAssociationProps {
 	handleBelongsTo: (evt: React.ChangeEvent<HTMLInputElement>, selectedTable: SchemaTable, otherTable: SchemaTable) => void
 }
 
-const TableAssociations: FunctionComponent<TableAssociationProps> = (props) => {
+const TableAssociations: FunctionComponent<TableAssociationProps> = (props: TableAssociationProps) => {
 	const { arr, table, handleBelongsTo } = props
 	return (
 		<div className="allCheckParent" id="toCenter">
