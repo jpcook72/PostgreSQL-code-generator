@@ -1,7 +1,3 @@
-// user gets to home page, presses new or gets saves schema
-// if new, new page
-// if saved, old page
-
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import App from '../components/App'

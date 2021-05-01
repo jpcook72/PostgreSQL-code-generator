@@ -14,10 +14,10 @@ const TableAssociations: FunctionComponent<TableAssociationProps> = (props: Tabl
 			<button>Belongs To</button>
 			<div className="hiddenCheck">
 				{
-					arr.map((inTable) => {
+					arr.map((inTable, ind) => {
 						if (inTable !== table) {
 							return (
-								<div className="centerChecks">
+								<div className="centerChecks" key={ind} >
 									<label htmlFor = "belongsTo">{`${inTable.name}`}</label>
 									<input name = "belongsTo" type="checkbox" onChange ={(e) => handleBelongsTo(e, table, inTable)} checked={table.belongsTo.includes(inTable.frontId)} />
 								</div>)

@@ -148,11 +148,11 @@ export default class Visualizer extends React.Component<RouteComponentPropsMatch
             <div className="fullBody">
                 <nav>
                     <div className="flexButtonContainer">
-                        <button className="saveButton" onClick={this.saveSchema}><i className="far fa-save"></i></button>
+                        <button className="saveButton" data-testid="saveButton" onClick={this.saveSchema}><i className="far fa-save"></i></button>
                         <button className="addTableButton" onClick={this.addTable}>+</button>
                     </div>
                     <h3>{schemaId || 'Loading...'}</h3>
-                    <div><Link to="/"><button ><i className="fas fa-home"></i></button></Link></div>
+                    <div><Link to="/"><button data-testid="homeButton"><i className="fas fa-home"></i></button></Link></div>
 
                 </nav>
                 <SchemaContainer
