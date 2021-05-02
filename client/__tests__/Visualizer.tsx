@@ -15,7 +15,7 @@ const server = setupServer(
 	// this mock GET endpoint sends an empty table schema
 	rest.get('/api/schema/ABC123', (req, res, ctx) => {
 		return res(ctx.json({
-			id: 'G2AIZX',
+			id: 'ABC123',
 			createdAt: '2021-04-29T02:13:31.568Z',
 			updatedAt: '2021-04-29T02:13:31.568Z',
 			tables: []
@@ -134,5 +134,7 @@ describe('Visualizer routing buttons work properly', () => {
 
 		const launchPageHeader = screen.getByRole('heading', { name: /Postgres Schema Maker/i })
 		expect(launchPageHeader).toBeInTheDocument()
+
+		cleanup()
 	})
 })
