@@ -10,10 +10,14 @@ const TableBody: FunctionComponent<TableBodyProps> = (props: TableBodyProps) => 
 	const { table, handleFieldChange } = props
 	return (
 		<div className="formBody">
-			<div className="formRowMain">
-				<div className="formRowMainLeftHeader">Field</div>
-				<div className="formRowMainRightHeader">Type</div>
-			</div>
+			{
+				table.fields.length
+					? <div className="formRowMain">
+						<div className="formRowMainLeftHeader">Field</div>
+						<div className="formRowMainRightHeader">Type</div>
+					</div>
+					: null
+			}
 			{
 				table.fields.map((field, idx) => {
 					return (
