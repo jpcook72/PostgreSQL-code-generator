@@ -1,6 +1,6 @@
 # PostgreSQL code-generator
 
-PostgreSQL code-generator is a database schema design tool that can be paired with [pg-auto-write](https://github.com/jpcook72/pg-auto-write) (npm module) to auto-generate the PostgreSQL code for modeling the database. Her is a [video example](https://www.youtube.com/watch?v=r2XFSdZUbB4&feature=youtu.be)
+PostgreSQL code-generator is a database schema design tool that can be paired with [pg-auto-write](https://github.com/jpcook72/pg-auto-write) (npm module) to auto-generate the PostgreSQL code for modeling the database. Here is a [video example](https://www.youtube.com/watch?v=r2XFSdZUbB4&feature=youtu.be)
 
 ## Using the app
 
@@ -65,7 +65,7 @@ App defaults to run on port 8080 - [localhost:8080](http://localhost:8080)
 
 ## App testing
 
-Tests (Jest, React Testing Library) for the schema tool are located in [client/__tests__](https://github.com/jpcook72/PostgreSQL-code-generator/tree/master/client/__tests__)
+Tests (Jest, React Testing Library) for the schema tool are located in [client/tests](https://github.com/jpcook72/PostgreSQL-code-generator/tree/master/client/__tests__)
 
 Tests (Jest) for the npm module are located in [test.js](https://github.com/jpcook72/pg-auto-write/blob/master/test.js)
 
