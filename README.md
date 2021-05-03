@@ -1,8 +1,6 @@
 # PostgreSQL code-generator
 
-[PostgreSQL code-generator](https://github.com/jpcook72/PostgreSQL-code-generator) is a database schema design tool that can be paired with [pg-auto-write](https://github.com/jpcook72/pg-auto-write) (npm module) to auto-generate the PostgreSQL code for modeling the database.
-
-## [Video Example](https://www.youtube.com/watch?v=r2XFSdZUbB4&feature=youtu.be)
+PostgreSQL code-generator is a database schema design tool that can be paired with [pg-auto-write](https://github.com/jpcook72/pg-auto-write) (npm module) to auto-generate the PostgreSQL code for modeling the database. Her is a [video example](https://www.youtube.com/watch?v=r2XFSdZUbB4&feature=youtu.be)
 
 ## Using the app
 
@@ -46,25 +44,9 @@ const init = async() => {
 init();
 ```
 
-## Testing
-
-Tests for the schema tool are located in [client/__tests__](https://github.com/jpcook72/PostgreSQL-code-generator/tree/master/client/__tests__)
-
-Tests for the npm module are located in [test.js](https://github.com/jpcook72/pg-auto-write/blob/master/test.js)
-
-Run tests:
-```
-npm run test
-```
-
-## Technologies Used
-
-TypeScript, JavaScript, Node, Express, React, Jest, React Testing Library
-
 ## Local installation of schema tool
 
 node v15.14.0
-
 react v16.13.1
 
 Getting project running locally:
@@ -79,4 +61,19 @@ Build the js files and start the local server:
 npm run start:dev
 ```
 
-Go to [localhost:8080](http://localhost:8080)
+App defaults to run on port 8080 - [localhost:8080](http://localhost:8080)
+
+## App testing
+
+Tests (Jest, React Testing Library) for the schema tool are located in [client/__tests__](https://github.com/jpcook72/PostgreSQL-code-generator/tree/master/client/__tests__)
+
+Tests (Jest) for the npm module are located in [test.js](https://github.com/jpcook72/pg-auto-write/blob/master/test.js)
+
+Run tests:
+```
+npm run test
+```
+
+## Technologies Used
+
+TypeScript, JavaScript, Node, Express, React, Jest, React Testing Library
