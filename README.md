@@ -77,3 +77,12 @@ npm run test
 ## Technologies Used
 
 TypeScript, JavaScript, Node, Express, React, Jest, React Testing Library
+
+
+## To-Do List
+
+1. Allow table-relationship arrow to change positioning on the table (both head and tail)
+
+2. Allow many-to-many relationships between tables
+
+3. Add more field features (i.e. default value)
