@@ -4,7 +4,7 @@ PostgreSQL code-generator is a database schema design tool that can be paired wi
 
 ## Using the app
 
-Go to https://pg-visualizer.herokuapp.com/ and save a database model schema.
+Go to https://pg-visualizer.herokuapp.com/ (NOTE: the Heroku settings need to be updated-- this link does not work right now) and save a database model schema.
 
 In your app, install pg-auto-write.
 ```
